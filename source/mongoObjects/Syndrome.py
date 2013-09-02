@@ -5,10 +5,10 @@ from mongoengine import Document
 from mongoengine import StringField
 
 
-class Symptome(Document):
-    """ definition of the mongoDB object Symptome
-    """
+class Syndrome(Document):
     id = IntField()
     name = StringField()
     short_description = StringField()
     long_description = StringField()
+    #scrawler_links = EmbeddedDocumentField()
+    #user_links = EmbeddedDocumentField()
