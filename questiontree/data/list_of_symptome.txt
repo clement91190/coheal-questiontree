@@ -1,0 +1,243 @@
+maigrissement
+Anorexie
+Asthénie
+Fièvre
+Sueurs nocturnes
+Bradycardie
+Claudication
+Circulation veineuse collatérale
+Douleur thoracique
+Dyspnée
+Hypertension
+Hypotension
+Lipothymie
+Œdème
+Palpitations
+Souffle vasculaire
+Souffle cardiaque
+Syncope
+Tachycardie
+Turgescence jugulaire
+Ascite
+Ballonnement abdominal
+Constipation
+Diarrhée
+Douleur abdominale
+Dyspepsie
+Dysphagie
+Érythrose palmaire
+Faux besoins
+Flapping
+Hématémèse
+Hépatalgie
+Hépatomégalie
+Ictère
+Melæna
+Nausées
+Ongle blanc
+Pyrosis
+Rectorragie
+Reflux gastro-œsophagien
+Régurgitations
+Splénomégalie
+Ténèsme
+Vomissements
+Apnée
+Bradypnée
+Cyanose
+Douleur thoracique
+Dyspnée
+Expectorations
+Hémoptysie
+Hippocratisme digital
+Tachypnée
+Toux
+Anurie
+Bactériurie
+Chylurie
+Déshydratation
+Dysurie
+Énurésie
+Fécalurie
+Hématurie
+Incontinence
+Leucocyturie
+Oligurie
+Pollakiurie
+polydipsie
+Polyurie
+Protéinurie
+Pneumaturie
+Pyurie
+Aboulie
+Agitation
+Agoraphobie
+Ambivalence
+Anorexie
+Anxiété
+Apragmatisme
+Attaque de panique
+Automatisme mental
+Claustrophobie
+Compulsion
+Coprolalie
+Délire
+Dissociation
+Écholalie
+Encoprésie
+Énurésie
+Fabulation
+Graphorrhée
+Hallucination
+Hyperactivité
+Hypermnésie
+Hypersomnie
+Hypersyntonie
+Hypomimie
+Idée suicidaire
+Impulsions
+Indignité
+Insomnie
+Logorrhée
+Ludisme
+Mégalomanie
+Mélancolie
+Mutisme
+Négativisme
+Nosophobie
+Obsession
+Palilalie
+Phobie
+Ralentissement psycho-moteur
+Soliloquie
+Stéréotypies
+Théatralisme
+Tics
+tristesse
+Vaginisme
+Céphalées
+Somnolence
+Syncope
+Vertige
+Hyperréflexie
+Aréflexie
+Signe de Babinski
+Clonus rotulien
+Trépidation épileptoïde du pied
+Déficit moteur
+Déficit sensitif
+Hypotonie
+Hypertonie
+Signe de Romberg
+Mydriase
+Myosis
+Signe d'Argyll Robertson
+Ptosis
+Signe de Charles Bell
+Signe des cils de Souques
+Anomalie de la marche
+Dysmétrie
+Hypermétrie
+Nystagmus
+Dyschronométrie
+Adiadococinésie
+Tremblements
+Dysarthrie
+Dyspraxie
+Aphasie de Broca
+Aphasie de Wernicke
+Ataxie
+Apraxie
+Amnésie
+Agnosie
+Asomatognosie
+Hémiasomatognosie
+Anosognosie
+Akinésie
+Micrographie
+Désorientation
+Onirisme
+Signe de Brudzinski
+Signe de Kernig
+Diplopie
+Myoclonie
+Hémianopsie
+Quadranopsie
+Amaurose
+Douleur articulaire
+Raideur (rhumatologie)
+Blocage
+Dérobement
+Boîterie
+Désaxation
+Tuméfaction
+Amyotrophie
+Déformation
+Impotence
+Signe de la sonnette
+Signe de Lasègue
+Cervicalgie
+Dorsalgie
+Lombalgie
+Goitre
+Obésité
+Thermophobie
+Éréthisme cardio-vasculaire
+Exophtalmie
+Endophtalmie
+Chémosis
+Macroglossie
+Alopécie
+Aménorrhée
+Vergetures
+Hypertrichose
+Mélanodermie
+Galactorrhée
+Gynécomastie
+Frigidité
+Signe de Chvostek
+Signe de Trousseau
+Xanthome
+Xanthalesma
+Pâleur
+Erythrose
+Adénopathie
+Cachexie
+Acouphènes
+Leucopénie
+Neutropénie
+Lymphopénie
+Thrombopénie
+Pancytopénie
+Agranulocytose
+Aplasie
+Hyperleucocytose
+Thrombocytose
+Purpura
+Splénomégalie
+Prurit à l'eau
+Surdité
+Acouphènes
+Hyperacousie
+Hypoacousie
+Anosmie
+Agueusie
+Xérostomie
+Dysphonie
+Dysphagie
+Macule
+Papule
+Bulle
+Prurit
+Nodule
+Vésicule
+Pustule
+Phlyctène
+Érythème
+Érosion
+Ulcération
+Hirsutisme
+Prurigo
+Exanthème
+Énanthème
+Triade de Lewis
