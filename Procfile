@@ -1,1 +1,1 @@
-server: python questiontree_server.py
+web: python questiontree_server.py
