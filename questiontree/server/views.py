@@ -1,10 +1,9 @@
 import traceback
-import flask
-from flask import jsonify
+from flask import jsonify, render_template
 from questiontree.server import app
 
 @app.route('/modify')
 def modify():
-    return "hello raph !"
+    return render_template('template.html')
 
 
