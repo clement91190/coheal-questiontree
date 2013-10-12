@@ -2,19 +2,38 @@
 <html>
     <head>
         <meta charset="utf-8" />
-        <link rel="stylesheet" href="style.css" />
         <title>Test</title>
         <script>
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', 'findandmodify')
-            xhr.send(null)
-        
+               
         </script>
 
 
     </head>
  
     <body>
-        <p> texte qui doit etre modifie dynamiquement </p>
+        <div id="truc"> texte qui doit etre modifie dynamiquement </div>
+        <input type="button" value ="coucou" />
     </body>
+    <script>
+        function bouton(){
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', 'findandmodify');
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        var question = document.getElementById('truc');
+                        question.innerHTML = xhr.responseText;
+                    }
+                };
+                xhr.send(null);
+            };
+
+
+        (function() {
+            var inputs = document.getElementsByTagName('input'),
+                inputsLen = inputs.length;
+                           
+            for (var i = 0 ; i < inputsLen ; i++) {
+                inputs[i].onclick = bouton ;
+            };
+        })(); </script>
 </html>

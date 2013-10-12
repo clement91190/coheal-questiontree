@@ -27,6 +27,7 @@ def findandmodify():
     question = models.Question.objects(q_id=models.Question.TYPE_SYMPTOME).first()
     return question.to_json()
 
+
 @app.route('/test')
 def test():
     return render_template('test.html')
