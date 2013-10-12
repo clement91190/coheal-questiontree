@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+    <title>Generateurs de questions</title>
+  </head>
+ 
+  <body>
+    <div>
+        <p> Sur cette interface, vous pouvez acceder aux differentes questions et les modifier, en particulier proposer un texte comprehensible par l'utilisateur, modifier son importance ...</p>
+    </div>
+
+    {% for q in questions %}
+    <div class='question'>
+        <h2> Symptome : {{q.symptome}}</h2>
+        <div>
+            <h3> Tags : </h3> 
+        {% for t in q.tags %}
+            <mark class='tags'> {{ t }} </mark>
+        {% endfor %}
+        <button class='addtag'> + </button>
+         </div>
+
+         <h3> Texte de la question pour le patient : </h3>
+         <cite> {{q.question_text}} </cite>
+        <button class ='modify'> Modifier </button>
+    </div>
+
+    {% endfor %}
+
+  </body>
+</html>
