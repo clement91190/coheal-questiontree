@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Test</title>
+        <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+   
+        <title>Modify one </title>
+    </head>
+ 
+    <body>
+     <div class='question'>
+        <h2> Symptome : {{question.q_id}} {{question.symptome}}</h2>
+        <form> 
+            <h3> Texte de la question pour le patient : </h3>
+            <label id="lb{{question.q_id}}">{{question.question_text}} </label>
+            <input type="text" id="qt{{question.q_id}}"> </input>
+            <button class ='modify' id="m{{question.q_id}}"> Modifier</button>
+        </form>
+     </div>
+                
+                
+                
+     <script> 
+         $("#qt{{question.q_id}}").hide(); // hide the form 
+        
+        function modifier(){  
+            $("#qt{{question.q_id}}").show();
+            $("#m{{question.q_id}}").text("Sauver");
+            $("#m{{question.q_id}}").click(sauver);
+            return false;}
+
+        function sauver(){
+            $("#m{{question.q_id}}").text("Modfier");
+            $("#m{{question.q_id}}").click(modifier);
+            $("#qt{{question.q_id}}").hide();
+            postqtext();
+            return false;}
+        
+        var machin = 4
+
+        function postqtext(){
+            var data = {
+                q_id: {{question.q_id}},
+                qtext: $("#qt{{question.q_id}}").val()};
+            $.post("findandmodify", data, 
+                 (function(data, status){
+                     $("#lb{{question.q_id}}").text(
+                        $.parseJSON(data).question_text)
+                    })
+                );}
+
+
+         $("#m{{question.q_id}}").click(modifier); //show the form on click
+        
+     </script>
+
+    </body>
+</html>

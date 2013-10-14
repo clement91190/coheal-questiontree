@@ -14,25 +14,34 @@
 
     {% for q in questions %}
     <div class='question'>
-        <h2> Symptome : {{q.q_id}} {{q.symptome}}</h2>
-        <div>
-            <h3> Tags : </h3> 
-        {% for t in q.tags %}
-            <mark class='tags'> {{ t }} </mark>
-        {% endfor %}
-        <button class='addtag'> + </button>
-         </div>
+        <form id = "f{{q.q_id}}">
+            <h2> Symptome : {{q.q_id}} {{q.symptome}}</h2>
+            <div>
+             <h3> Tags : </h3> 
+                 {% for t in q.tags %}
+                 <mark class='tags'> {{ t }} </mark>
+                {% endfor %}
+            <input type="text" name="newtag">   
+            <button class='addtag'> + </button>
+            </div>
 
-         <h3> Texte de la question pour le patient : </h3>
-         <cite> {{q.question_text}} </cite>
-        <button class ='modify'> Modifier </button>
-    </div>
+            <h3> Texte de la question pour le patient : </h3>
+            <input type="text" id="qt{{q.q_id}}"> </input>
+            <script> $(".qt{{q.q_id}}").value = "{{q.question_text}}"
+            </script>
+         <button class ='modify' id="m{{q.q_id}}" onclick=modify({{q.q_id}})> Modifier </button>
+     </form>
+
+    <script> </script>
+
+     </div>
 
     {% endfor %}
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
     <script type=text/javascript>
     //$('body').html('Hello World');
-        function modify_text(){
+    function modify_text(id){
+        $.(".qt"+id).text("coucou")
         };
         function add_tag(){};
         function del_tag(){};
