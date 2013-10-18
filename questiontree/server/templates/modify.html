@@ -91,6 +91,11 @@
         <p> Sur cette interface, vous pouvez acceder aux differentes questions et les modifier, en particulier proposer un texte comprehensible par l'utilisateur, modifier son importance ...</p>
     </div>
 
+    <div>
+      <button class='onglet' onclick="location.href='/modify';"> Question liee a un symptome  </button>
+      <button class='onglet' onclick="location.href='https://docs.google.com/document/d/1ekkAjodN5IdhoQhNC4Inz4Mvw2NDMG4J7ssU6YAWfIA/edit?usp=sharing';"> Question generique </button>
+    </div>
+   
     {% for q in questions %}
  <div class='question'>
         <h2> Symptome : {{q.q_id}} {{q.symptome}}</h2>

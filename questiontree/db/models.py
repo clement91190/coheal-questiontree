@@ -23,6 +23,7 @@ class Question(Document):
     tags = ListField()
     symptome = StringField()
     question_text = StringField()
+    answer_choices = ListField()
 
     TYPE_SYMPTOME = 2
     TYPE_GENERIQUE = 1 

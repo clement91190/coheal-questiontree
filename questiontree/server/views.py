@@ -33,6 +33,15 @@ def help():
     return render_template('help.html')
 
 
+@app.route('/question-generique')
+def questiongeneriques():
+    try:
+        questions = models.Question.objects(q_type=models.Question.TYPE_GENERIQUE)
+        return render_template('question_gen.html', questions=questions)
+    except:
+        return "not good"
+
+
 @app.route('/simu')
 def simulate():
     return render_template('simulate.html')
