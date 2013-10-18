@@ -19,6 +19,19 @@
                 $("#tt" + id).hide();
                 return false;}
             
+            function modifier_symptome(id){  
+                $("#ts" + id).show();
+                $("#ss" + id).show()
+                $("#ms" + id).hide()
+                return false;}
+
+            function sauver_symptome(id){
+                $("#ms" + id).show()
+                $("#ss" + id).hide()
+                $("#ts" + id).hide();
+                postsymptome(id);
+                return false;}
+            
             function modifier(id){  
                 $("#qt" + id).show();
                 $("#s" + id).show()
@@ -33,6 +46,18 @@
                 return false;}
             
             var machin = 0;
+            
+            function postsymptome(id){
+                var data = {
+                    q_id:  id,
+                    symptometext: $("#ts" + id).val()};
+                    $.post("findandmodifysymp", data, 
+                    (function(data, status){
+                        $("#lbs" + id).text(
+                        $.parseJSON(data).symptome)
+                        })
+                    );}
+
 
             function postqtext(id){
                 var data = {
@@ -97,20 +122,25 @@
     </div>
    
     {% for q in questions %}
- <div class='question'>
-        <h2> Symptome : {{q.q_id}} {{q.symptome}}</h2>
-            <div>
-             <h3> Tags : </h3> 
-                <div id="tg{{q.q_id}}">   
-                {% for i,t in enumerate(q.tags) %}
-                <mark class='tags'> {{ t }} </mark>
-                <button class='del' onclick=deltag({{q.q_id}},{{i}})> X </button>
-                {% endfor %}
-                </div>    
-                <input type="text" id="tt{{q.q_id}}">   
-            <button class='addtag' id="at{{q.q_id}}"> + </button>
-            <button class='addtag' id="mt{{q.q_id}}"> Modifier </button>
-            </div>
+    <div class='question'>
+        <form>
+            <h2> Symptome : {{q.q_id}} <label id="lbs{{q.q_id}}">{{q.symptome}} </label></h2>
+            <input type="text" id="ts{{q.q_id}}">   
+            <button class ='modify' id="ms{{q.q_id}}"> Modifier</button>
+            <button class ='modify' id="ss{{q.q_id}}"> Sauver</button>
+        </form>
+    <div>
+        <h3> Tags : </h3> 
+            <div id="tg{{q.q_id}}">   
+            {% for i,t in enumerate(q.tags) %}
+            <mark class='tags'> {{ t }} </mark>
+            <button class='del' onclick=deltag({{q.q_id}},{{i}})> X </button>
+            {% endfor %}
+            </div>    
+            <input type="text" id="tt{{q.q_id}}">   
+        <button class='addtag' id="at{{q.q_id}}"> + </button>
+        <button class='addtag' id="mt{{q.q_id}}"> Modifier </button>
+        </div>
 
 <form> 
             <h3> Texte de la question pour le patient : </h3>
@@ -125,14 +155,19 @@
                 
      <script> 
 
-        $("#qt{{q.q_id}}").hide(); // hide the form 
+        $("#ts{{q.q_id}}").hide(); // hide the form 
         $("#tt{{q.q_id}}").hide(); // hide the form 
+        $("#qt{{q.q_id}}").hide(); // hide the form 
+        $("#ms" + {{q.q_id}}).click((function(){return modifier_symptome({{q.q_id}})})); 
+        $("#ss" + {{q.q_id}}).click((function(){return sauver_symptome({{q.q_id}})})); 
         $("#m" + {{q.q_id}}).click((function(){return modifier({{q.q_id}})})); 
         $("#s" + {{q.q_id}}).click((function(){return sauver({{q.q_id}})})); 
         $("#at" + {{q.q_id}}).click((function(){return add_mode({{q.q_id}})}));
         $("#mt" + {{q.q_id}}).click((function(){return normal_mode({{q.q_id}})}));
         $("#mt" + {{q.q_id}}).hide()
         $("#s" + {{q.q_id}}).hide()
+        $("#ss" + {{q.q_id}}).hide()
+
      </script>
 
 

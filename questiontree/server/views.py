@@ -61,6 +61,20 @@ def findandmodify():
         return False
 
 
+@app.route('/findandmodifysymp', methods=['POST'])
+def findandmodifysymp():
+    try: 
+        q_id = request.form['q_id']
+        text = request.form['symptometext']
+        question = models.Question.objects(q_id=q_id).first()
+        question.symptome = text
+        question.save()
+        return question.to_json()
+    except:
+        print traceback.print_exc()
+        return False
+
+
 @app.route('/addtag', methods=['POST'])
 def addtag():
     try:
