@@ -3,7 +3,86 @@
   <head>
     <meta charset="utf-8" />
     <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
-    
+      <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+      <script>
+          var id;
+            function add_mode(id){  
+                $("#tt" + id).show();
+                $("#at" + id).hide();
+                $("#mt" + id).show();
+                return false;}
+
+            function normal_mode(id){
+                $("#mt" + id).hide()
+                $("#at" + id).show()
+                addtag(id);
+                $("#tt" + id).hide();
+                return false;}
+            
+            function modifier(id){  
+                $("#qt" + id).show();
+                $("#s" + id).show()
+                $("#m" + id).hide()
+                return false;}
+
+            function sauver(id){
+                $("#m" + id).show()
+                $("#s" + id).hide()
+                $("#qt" + id).hide();
+                postqtext(id);
+                return false;}
+            
+            var machin = 0;
+
+            function postqtext(id){
+                var data = {
+                    q_id:  id,
+                    qtext: $("#qt" + id).val()};
+                $.post("findandmodify", data, 
+                    (function(data, status){
+                        $("#lb" + id).text(
+                        $.parseJSON(data).question_text)
+                        })
+                    );}
+
+            function update_question(data, status, id){
+                // update question_text
+                $("#lb" + id).text(
+                    $.parseJSON(data).question_text);
+                question = $.parseJSON(data) ;
+                
+                var code = "";
+                
+                for (var i =0; i< question.tags.length; i++ )
+                {
+                    code += " <mark class='tags'>";
+                    code += question.tags[i] + " </mark>";
+                    code += "<button class='del'> X </button>"
+                }
+
+                $("#tg" + id).html(code);
+                $("#tg" + id).children(".del").each(function(i){
+                    $( this ).click(function(){deltag(id, i)})});
+
+            }
+
+            function addtag(id){
+                var data = {
+                    q_id:  id,
+                    tag_text: $("#tt" + id).val()};
+                $.post("addtag", data,(function(data, status){
+                    update_question(data, status, id)}) );
+                }
+
+            function deltag(q_id, tag_id){
+                var data = {
+                    q_id: q_id,
+                    tag_id : tag_id}
+                $.post("deltag", data,(function(data, status){
+                    update_question(data, status, q_id)}) );
+                }
+        </script>
+       
     <title>Generateurs de questions</title>
   </head>
  
@@ -13,43 +92,50 @@
     </div>
 
     {% for q in questions %}
-    <div class='question'>
-        <form id = "f{{q.q_id}}">
-            <h2> Symptome : {{q.q_id}} {{q.symptome}}</h2>
+ <div class='question'>
+        <h2> Symptome : {{q.q_id}} {{q.symptome}}</h2>
             <div>
              <h3> Tags : </h3> 
-                 {% for t in q.tags %}
-                 <mark class='tags'> {{ t }} </mark>
+                <div id="tg{{q.q_id}}">   
+                {% for i,t in enumerate(q.tags) %}
+                <mark class='tags'> {{ t }} </mark>
+                <button class='del' onclick=deltag({{q.q_id}},{{i}})> X </button>
                 {% endfor %}
-            <input type="text" name="newtag">   
-            <button class='addtag'> + </button>
+                </div>    
+                <input type="text" id="tt{{q.q_id}}">   
+            <button class='addtag' id="at{{q.q_id}}"> + </button>
+            <button class='addtag' id="mt{{q.q_id}}"> Modifier </button>
             </div>
 
+<form> 
             <h3> Texte de la question pour le patient : </h3>
+            <label id="lb{{q.q_id}}">{{q.question_text}} </label>
             <input type="text" id="qt{{q.q_id}}"> </input>
-            <script> $(".qt{{q.q_id}}").value = "{{q.question_text}}"
-            </script>
-         <button class ='modify' id="m{{q.q_id}}" onclick=modify({{q.q_id}})> Modifier </button>
-     </form>
-
-    <script> </script>
-
+            <button class ='modify' id="m{{q.q_id}}"> Modifier</button>
+            <button class ='modify' id="s{{q.q_id}}"> Sauver</button>
+        </form>
      </div>
+                
+                
+                
+     <script> 
 
+        $("#qt{{q.q_id}}").hide(); // hide the form 
+        $("#tt{{q.q_id}}").hide(); // hide the form 
+        $("#m" + {{q.q_id}}).click((function(){return modifier({{q.q_id}})})); 
+        $("#s" + {{q.q_id}}).click((function(){return sauver({{q.q_id}})})); 
+        $("#at" + {{q.q_id}}).click((function(){return add_mode({{q.q_id}})}));
+        $("#mt" + {{q.q_id}}).click((function(){return normal_mode({{q.q_id}})}));
+        $("#mt" + {{q.q_id}}).hide()
+        $("#s" + {{q.q_id}}).hide()
+     </script>
+
+
+    
     {% endfor %}
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-    <script type=text/javascript>
-    //$('body').html('Hello World');
-    function modify_text(id){
-        $.(".qt"+id).text("coucou")
-        };
-        function add_tag(){};
-        function del_tag(){};
-        function load_all(){
-            $("question").each(function(i){
-                    $(this).innerHTML= truc
-                    })
-        };
-    </script>
-  </body>
+
+
+
+
+   </body>
 </html>

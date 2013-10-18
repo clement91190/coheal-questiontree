@@ -2,37 +2,36 @@
 <html>
     <head>
         <meta charset="utf-8" />
-        <title>Test</title>
         <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
         <script>
             function add_mode(id){  
                 $("#tt" + id).show();
-                $("#at" + id).text("Modifier");
-                $("#at" + id).click((function(){return normal_mode(id)}));
+                $("#at" + id).hide();
+                $("#mt" + id).show();
                 return false;}
 
             function normal_mode(id){
-                $("#at" + id).text("+");
-                $("#at" + id).click((function(){return add_mode(id)}));
-                $("#tt" + id).hide();
+                $("#mt" + id).hide()
+                $("#at" + id).show()
                 addtag(id);
+                $("#tt" + id).hide();
                 return false;}
             
             function modifier(id){  
                 $("#qt" + id).show();
-                $("#m" + id).text("Sauver");
-                $("#m" + id).click((function(){return sauver(id)}));
+                $("#s" + id).show()
+                $("#m" + id).hide()
                 return false;}
 
             function sauver(id){
-                $("#m" + id).text("Modfier");
-                $("#m" + id).click((function(){return modifier(id)}));
+                $("#m" + id).show()
+                $("#s" + id).hide()
                 $("#qt" + id).hide();
                 postqtext(id);
                 return false;}
             
-            var machin = 4;
+            var machin = 0;
 
             function postqtext(id){
                 var data = {
@@ -50,18 +49,21 @@
                 // update question_text
                 $("#lb" + id).text(
                     $.parseJSON(data).question_text);
-                    question = $.parseJSON(data) ;
-                    
-                    var code = "";
-                    
-                    for (var i =0; i< question.tags.length; i++ )
-                    {
-                        code += " <mark class='tags'>";
-                        code += question.tags[i] + " </mark>";
-                        code += "<button class='del'> X </button>"
-                    }
-                    machin = code;
-                    $("#tg" + id).html(code);
+                question = $.parseJSON(data) ;
+                
+                var code = "";
+                
+                for (var i =0; i< question.tags.length; i++ )
+                {
+                    code += " <mark class='tags'>";
+                    code += question.tags[i] + " </mark>";
+                    code += "<button class='del'> X </button>"
+                }
+
+                $("#tg" + id).html(code);
+                $("#tg" + id).children(".del").each(function(i){
+                    $( this ).click(function(){deltag(id, i)})});
+
             }
 
             function addtag(id){
@@ -98,6 +100,7 @@
                 </div>    
                 <input type="text" id="tt{{question.q_id}}">   
             <button class='addtag' id="at{{question.q_id}}"> + </button>
+            <button class='addtag' id="mt{{question.q_id}}"> Modifier </button>
             </div>
 
 <form> 
@@ -105,6 +108,7 @@
             <label id="lb{{question.q_id}}">{{question.question_text}} </label>
             <input type="text" id="qt{{question.q_id}}"> </input>
             <button class ='modify' id="m{{question.q_id}}"> Modifier</button>
+            <button class ='modify' id="s{{question.q_id}}"> Sauver</button>
         </form>
      </div>
                 
@@ -112,11 +116,15 @@
                 
      <script> 
 
-         var id = {{question.q_id}};
-         $("#qt{{question.q_id}}").hide(); // hide the form 
-         $("#tt{{question.q_id}}").hide(); // hide the form 
-         $("#m" + id).click((function(){return modifier(id)})); //show the form on click
-         $("#at" + id).click((function(){return add_mode(id)})); //show the form on click
+        var id = {{question.q_id}};
+        $("#qt{{question.q_id}}").hide(); // hide the form 
+        $("#tt{{question.q_id}}").hide(); // hide the form 
+        $("#m" + id).click((function(){return modifier(id)})); 
+        $("#s" + id).click((function(){return sauver(id)})); 
+        $("#at" + id).click((function(){return add_mode(id)}));
+        $("#mt" + id).click((function(){return normal_mode(id)}));
+        $("#mt" + id).hide()
+        $("#s" + id).hide()
      </script>
 
     </body>

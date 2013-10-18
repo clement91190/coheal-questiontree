@@ -5,7 +5,7 @@ import traceback
 
 @app.route('/modify')
 def modify():
-    questions = models.Question.objects(q_type=models.Question.TYPE_SYMPTOME)
+    questions = models.Question.objects(q_type=models.Question.TYPE_SYMPTOME).order_by('q_id')
     print len(questions)
     return render_template(
         'modify.html',
@@ -71,13 +71,16 @@ def del_tag():
     try:
         q_id = request.form['q_id']
         tag_id = request.form['tag_id']
+        tag_id = int(tag_id)
+        q_id = int(q_id)
         question = models.Question.objects(q_id=q_id).first()
-        print "ok ici ?"
         del(question.tags[tag_id])
         question.save()
         return question.to_json()
     except:
         print traceback.print_exc()
+        print q_id
+        print tag_id
         return False
 
 
