@@ -26,4 +26,20 @@ class Question(Document):
     answer_choices = ListField()
 
     TYPE_SYMPTOME = 2
-    TYPE_GENERIQUE = 1 
+    TYPE_GENERIQUE = 1
+
+
+class Tags(Document):
+    """
+    class to store all the tags
+    """
+    meta = {
+        'db_alias': 'question-tree-production',
+        'collection': 'tags'}
+    tag_id = IntField()
+    text = StringField()
+    translation = StringField()
+    appearance = IntField()
+    #describe the relation to the other tags (appearance of both)
+    relation = ListField()  
+
