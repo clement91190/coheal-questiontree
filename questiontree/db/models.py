@@ -29,17 +29,25 @@ class Question(Document):
     TYPE_GENERIQUE = 1
 
 
-class Tags(Document):
+class Tag(Document):
     """
     class to store all the tags
     """
     meta = {
         'db_alias': 'question-tree-production',
         'collection': 'tags'}
+    
     tag_id = IntField()
     text = StringField()
     translation = StringField()
     appearance = IntField()
     #describe the relation to the other tags (appearance of both)
     relation = ListField()  
+
+    @staticmethod
+    def clean_data():
+        for i in Tag.objects(appearance__lt=2):
+            print "delete {} ".format(i)
+            i.delete()
+
 
