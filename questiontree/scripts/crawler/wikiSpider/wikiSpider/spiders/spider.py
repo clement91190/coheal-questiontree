@@ -8,13 +8,21 @@ import nltk
 class wikiSpider(CrawlSpider):
     name = "wikiSpider"
     allowed_domains = ['wikipedia.org']
-    start_urls = ["http://fr.wikipedia.org/wiki/Medecine"]
-
+    symptome_list = ['cyanose', 'attaque de panique']
+    #start_urls = ["http://fr.wikipedia.org/wiki/Medecine"]
+    start_urls = []
+    for s in symptome_list:
+        start_urls.append('https://www.google.fr/search?q=' + s.encode('UTF-8'))
+    """    
     rules = (
     Rule(SgmlLinkExtractor(restrict_xpaths=('//div[@class="mw-body"]//a/@href'))),
     Rule(SgmlLinkExtractor( allow=("http://fr.wikipedia.org/wiki/",)), callback='parse_item'),
     )
-
+"""
+    rules = (
+    Rule(SgmlLinkExtractor(restrict_xpaths=('//div[@id="center_col"]//li[@class="g"]//h3[@class="r"]//a/@href'))),
+    Rule(SgmlLinkExtractor( allow=("",)), callback='parse_item'),
+    )
 
     def parse_item(self, response):
         hxs = HtmlXPathSelector(response)

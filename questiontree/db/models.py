@@ -28,6 +28,11 @@ class Question(Document):
     TYPE_SYMPTOME = 2
     TYPE_GENERIQUE = 1
 
+    @staticmethod
+    def get_all_symptome():
+        """ return a list of all symptome in the questions"""
+        return [q.symptome for q in Question.objects(q_type=2)]
+
 
 class Tag(Document):
     """
