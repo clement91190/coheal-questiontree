@@ -2,6 +2,7 @@ from flask import render_template, request
 from questiontree.server import app 
 from questiontree.db import models
 import traceback
+import json
 
 @app.route('/modify')
 def modify():
@@ -106,6 +107,16 @@ def del_tag():
         print tag_id
         return False
 
+
+@app.route('/delquestion', methods=['POST'])
+def delquestion():
+    try:
+        q_id = request.form['q_id']
+        models.Question.objects(q_id=q_id).first().delete()
+        return json.dumps({'success': True})
+    except:
+        print traceback.print_exc()
+    
 
 @app.route('/test')
 def test():

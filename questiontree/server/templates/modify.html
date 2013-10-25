@@ -6,6 +6,11 @@
       <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
       <script>
           var id;
+            function delete_question(id){
+                if (confirm("Etes vous sur de vouloir supprimer cette question?"))
+                {postdeleteq(id);}
+                return false;}
+
             function add_mode(id){  
                 $("#tt" + id).show();
                 $("#at" + id).hide();
@@ -46,7 +51,16 @@
                 return false;}
             
             var machin = 0;
-            
+             
+            function postdeleteq(id){
+                var data = {
+                    q_id:  id}
+                    $.post("delquestion", data, 
+                    (function(data, status){
+                    $("#q" + id).remove();
+                    }));}
+
+
             function postsymptome(id){
                 var data = {
                     q_id:  id,
@@ -122,12 +136,13 @@
     </div>
    
     {% for q in questions %}
-    <div class='question'>
+    <div class='question' id="q{{q.q_id}}">
         <form>
             <h2> Symptome : {{q.q_id}} <label id="lbs{{q.q_id}}">{{q.symptome}} </label></h2>
             <input type="text" id="ts{{q.q_id}}">   
             <button class ='modify' id="ms{{q.q_id}}"> Modifier</button>
             <button class ='modify' id="ss{{q.q_id}}"> Sauver</button>
+            <button class ='delquest' id="dq{{q.q_id}}"> Supprimer</button>
         </form>
     <div>
         <h3> Tags : </h3> 
@@ -160,6 +175,7 @@
         $("#qt{{q.q_id}}").hide(); // hide the form 
         $("#ms" + {{q.q_id}}).click((function(){return modifier_symptome({{q.q_id}})})); 
         $("#ss" + {{q.q_id}}).click((function(){return sauver_symptome({{q.q_id}})})); 
+        $("#dq" + {{q.q_id}}).click((function(){return delete_question({{q.q_id}})})); 
         $("#m" + {{q.q_id}}).click((function(){return modifier({{q.q_id}})})); 
         $("#s" + {{q.q_id}}).click((function(){return sauver({{q.q_id}})})); 
         $("#at" + {{q.q_id}}).click((function(){return add_mode({{q.q_id}})}));
