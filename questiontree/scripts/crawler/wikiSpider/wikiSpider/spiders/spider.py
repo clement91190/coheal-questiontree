@@ -5,6 +5,7 @@ from scrapy.selector import HtmlXPathSelector
 from scrapy.http import Request
 import nltk
 
+
 class wikiSpider(CrawlSpider):
     name = "wikiSpider"
     allowed_domains = ['wikipedia.org']
@@ -12,7 +13,8 @@ class wikiSpider(CrawlSpider):
     #start_urls = ["http://fr.wikipedia.org/wiki/Medecine"]
     start_urls = []
     for s in symptome_list:
-        start_urls.append('https://www.google.fr/search?q=' + s.encode('UTF-8'))
+        start_urls.append('https://www.google.fr/search?sclient=psy&hl=fr&source=hp&q=' + s.encode('UTF-8') + '&btnG=Rechercher'
+                +'#q='+ s.encode('UTF-8'))
     """    
     rules = (
     Rule(SgmlLinkExtractor(restrict_xpaths=('//div[@class="mw-body"]//a/@href'))),
@@ -20,7 +22,7 @@ class wikiSpider(CrawlSpider):
     )
 """
     rules = (
-    Rule(SgmlLinkExtractor(restrict_xpaths=('//div[@id="center_col"]//li[@class="g"]//h3[@class="r"]//a/@href'))),
+    Rule(SgmlLinkExtractor(restrict_xpaths=('//div[@id="center_col"]/li[@class="g"]/h3[@class="r"]/a/@href'))),
     Rule(SgmlLinkExtractor( allow=("",)), callback='parse_item'),
     )
 
