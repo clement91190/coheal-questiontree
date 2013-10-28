@@ -71,6 +71,47 @@ class Graph(Document):
         node = Graph.objects(q_id=self.edges[ind])
         return node
 
+    @staticmethod
+    def path_length(id1, id2, temp=0):
+        temp += 1
+        if id1 == id2:
+            return 0
+        if temp < Graph.objects().count():
+            list_of_length = [Graph.path_length(id, id2, temp) for id in Graph.objects(q_id=id1).first()]
+            return 1 + min(list_of_length)
+        else:
+            #  saturation 
+            return Graph.objects().count()
+   
+    def mean_path_length(self):
+        """ generate the mean of the path length
+        over the rest of the graph """
+        s = 0
+        tasks = zip(
+            [g.q_id for g in Graph.objects()], 
+            [False for q in Graph.objects()])
+        temp = 0
+        node_already_seen = set()
+        new_nodes = set([self.q_id])
+        sat = Graph.objects.count()
+        while not all([b for id, b in tasks]) and temp < sat:
+            new_nodes.difference(node_already_seen)
+            s += temp * len(new_nodes)
+            for n in new_nodes:
+                tasks[n] = True
+            l = list(new_nodes)
+            node_already_seen.union(new_nodes)    
+            new_nodes = set([])
+            for n in l:
+                new_nodes.union(set(Graph.objects(q_id=n).edges))
+            
+        self.mean_path_length = s * 1.0 / sat
+
+    @staticmethod
+    def gen_mean_paths(self):
+        for n in Graph.objects():
+            n.mean_path_length()
+
 
 class TreeStructure(Document):
     q_id = IntField()
