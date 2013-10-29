@@ -8,9 +8,18 @@ import traceback
 @app.route('/tags')
 def tags():
     """display an interface to see tags and ban some of them"""
-    tags = models.Tag.objects(banned = False)
-    ban_tags = models.Tag.objects(banned = True)
+    page = request.args.get('p')
+    page = int(page)
+    if page is None:
+        page = 0
+    try:
+        tags = models.Tag.objects(banned__ne=True)[page * 50:(page + 1) * 50]
+    except:
+        page = 0
+        tags = models.Tag.objects(banned__ne=True)[page * 50:(page + 1) * 50]
+    ban_tags = models.Tag.objects(banned=True)
     return render_template('tags.html', tags=tags, ban_tags=ban_tags)
+
 
 @app.route('/modify')
 def modify():
@@ -63,6 +72,7 @@ def ban_tag():
     tag = models.Tag.objects(tag_id=tag_id).first()
     tag.banned = True
     tag.save()
+    return "ok"
  
 @app.route('/findandmodify', methods=['POST'])
 def findandmodify():

@@ -9,6 +9,9 @@ import questiontree.db.models as models
 
 
 class HTMLParserdepth(HTMLParser):
+    def __init__(self):
+        self.tags = []
+
     def handle_starttag(self, tag, attrs):
         pass
     
@@ -22,6 +25,7 @@ class HTMLParserdepth(HTMLParser):
             for w, t in tags:
                 if t.find('NN') >= 0 and len(w) > 6 and re.match("^[A-Za-z]*$", w):
                     fich.write(w)
+                    self.tags.append(w)
                     #print w, t
                     fich.write('\n')
 
@@ -106,7 +110,24 @@ def get_links(key):
     return parser.links
 
 
-def crawl(key):
+def build_graph_relations_from_tag_list(tags, all_tags):
+    d = {t.text : t for t in all_tags}
+    for t1 in tags:
+        for t2 in tags:
+            if t1 in d.keys() and t2 in d.keys():
+                id1 =  d[t1].tag_id
+                id2 =  d[t2].tag_id
+                try:
+                    t1.edges.[id2] += 1
+                except:
+                    t1.edges[id2] = 1
+                try:
+                    t2.edges.[id2] += 1
+                except:
+                    t2.edges[id2] = 1
+
+
+def crawl(key, buildGraph=False, all_tags=[]):
     links = get_links(key)
     parser = HTMLParserdepth()
     for l in links:
@@ -117,7 +138,9 @@ def crawl(key):
             try:
                 encoding = result.headers.getparam('charset')
                 page = page.decode(encoding)
-                parser.feed(page)   
+                parser.feed(page)
+                build_graph_relations_from_tag_list(parser.tags, all_tags)
+                parser.tags = []
             except UnicodeDecodeError:
                 encoding = chardet.detect(page)['encoding']
                 if encoding != 'unicode':
@@ -133,13 +156,27 @@ def crawl(key):
             print " BAD LINK : {}".format(l)
     
 
-def main():
+def build_tag_list():
     crawl('medecine')
     l = models.Question.get_all_symptome()
     print l 
     for s in l:
         print s
         crawl(s.encode('UTF-8'))
+
+
+def build_graph():
+
+    all_tags = models.Tag.objects(banned__ne=True)
+    crawl('medecine', True, all_tags)
+    l = models.Question.get_all_symptome()
+    print l 
+    for s in l:
+        print s
+        crawl(s.encode('UTF-8'), True, all_tags)
+    for t in all_tags:
+        t.save()
+
 
 if __name__ == "__main__":
     main()

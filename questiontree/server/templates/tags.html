@@ -7,16 +7,16 @@
       <script> 
           function bannir_tag(id)
           {
-                if (confirm("Etes vous sur de vouloir bannir ce tag?"))   
-                {
+                //if (confirm("Etes vous sur de vouloir bannir ce tag?"))   
+                //{
                 var data = {
                             tag_id:  id}
                 $.post("ban_tag", data, 
                         (function(data, status){
                             $("#tag" + id).remove();
                         }));
-                }
-            return False    
+                //}
+            return false    
             }</script>
       
       <title> Editeur des tags</title>
@@ -33,7 +33,7 @@
             <h2> {{t.tag_id}} <label > {{t.text}} </label></h2>
             <button class ='modify' id="bn{{t.tag_id}}"> Bannir</button>
         </form>
-                
+    </div>            
      <script> 
 
         $("#bn" + {{t.tag_id}}).click((function(){return bannir_tag({{t.tag_id}})})); 

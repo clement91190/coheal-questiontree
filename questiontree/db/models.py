@@ -1,6 +1,6 @@
 # -*-coding:Utf-8 -*
 from mongoengine import Document, StringField, IntField, ListField,\
-    register_connection, BooleanField
+    register_connection, BooleanField, DictField
 
 
 QUESTION_URI = 'mongodb://clement91190:rafiki@lafleur.mongohq.com:10078/app18535327'
@@ -46,8 +46,7 @@ class Tag(Document):
     text = StringField()
     translation = StringField()
     appearance = IntField()
-    #describe the relation to the other tags (appearance of both)
-    relation = ListField()
+    edges = DictField()  # key (ind_tag)-> weight
     banned = BooleanField()
 
     @staticmethod
