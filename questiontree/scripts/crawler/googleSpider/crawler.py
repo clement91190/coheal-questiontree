@@ -1,9 +1,11 @@
+# -*-coding:Utf-8 -*
 import urllib2
 from HTMLParser import HTMLParser
 import nltk
 import traceback
 import chardet
 import re
+import questiontree.db.models as models
 
 
 class HTMLParserdepth(HTMLParser):
@@ -76,12 +78,20 @@ class MyHTMLParser(HTMLParser):
             pass
 
 
+def google_format(key):
+    while key.find(" ") >= 0:
+        ind = key.find(" ")
+        key= key[:ind] + '%20' + key[ind+1:]
+    return key    
+
 def search(key):
     #url = 'https://www.google.com?q=' + key + '#q=' + key
     #result = urllib2.urlopen(url)
     request = urllib2.Request('')
     request_headers = {'User-Agent': 'MyBrowser/0.1'}
-    request = urllib2.Request('http://www.google.com/search?q=' + key, None, request_headers)
+    url = 'http://www.google.com/search?q={}'.format(google_format(key))  
+    print "Google search for {}".format(url)
+    request = urllib2.Request(url, None, request_headers)
     result = urllib2.urlopen(request)
     return result
 
@@ -125,6 +135,11 @@ def crawl(key):
 
 def main():
     crawl('medecine')
+    l = models.Question.get_all_symptome()
+    print l 
+    for s in l:
+        print s
+        crawl(s.encode('UTF-8'))
 
 if __name__ == "__main__":
     main()

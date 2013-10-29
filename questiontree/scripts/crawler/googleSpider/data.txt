@@ -41,7 +41,6 @@ OnThisPage
 Browser
 Advertisement
 Medecine
-MainTxt
 science
 disease
 science

@@ -1,7 +1,16 @@
+# -*-coding:Utf-8 -*
 from flask import render_template, request
 from questiontree.server import app 
 from questiontree.db import models
 import traceback
+
+
+@app.route('/tags')
+def tags():
+    """display an interface to see tags and ban some of them"""
+    tags = models.Tag.objects(banned = False)
+    ban_tags = models.Tag.objects(banned = True)
+    return render_template('tags.html', tags=tags, ban_tags=ban_tags)
 
 @app.route('/modify')
 def modify():
@@ -47,6 +56,14 @@ def simulate():
     return render_template('simulate.html')
 
 
+@app.route('/ban_tag', methods=['POST'])
+def ban_tag():
+    """ ban the corresponding tag ( change it's status in the database) """
+    tag_id = request.form['tag_id']
+    tag = models.Tag.objects(tag_id=tag_id).first()
+    tag.banned = True
+    tag.save()
+ 
 @app.route('/findandmodify', methods=['POST'])
 def findandmodify():
     try: 

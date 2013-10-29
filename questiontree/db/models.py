@@ -1,6 +1,6 @@
 # -*-coding:Utf-8 -*
 from mongoengine import Document, StringField, IntField, ListField,\
-    register_connection
+    register_connection, BooleanField
 
 
 QUESTION_URI = 'mongodb://clement91190:rafiki@lafleur.mongohq.com:10078/app18535327'
@@ -47,7 +47,8 @@ class Tag(Document):
     translation = StringField()
     appearance = IntField()
     #describe the relation to the other tags (appearance of both)
-    relation = ListField()  
+    relation = ListField()
+    banned = BooleanField()
 
     @staticmethod
     def clean_data():
