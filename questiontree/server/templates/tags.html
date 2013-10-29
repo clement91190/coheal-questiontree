@@ -30,8 +30,7 @@
     {% for t in tags %}
     <div class='tagsdisplay' id="tag{{t.tag_id}}">
         <form>
-            <h2> {{t.tag_id}} <label > {{t.text}} </label></h2>
-            <button class ='modify' id="bn{{t.tag_id}}"> Bannir</button>
+            {{t.tag_id}} <label style="font-weight:bold;"> {{t.text}}  </label> apparitions : {{t.appearance}} <button class ='modify' id="bn{{t.tag_id}}"> Bannir</button>
         </form>
     </div>            
      <script> 

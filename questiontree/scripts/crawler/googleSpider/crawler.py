@@ -10,6 +10,7 @@ import questiontree.db.models as models
 
 class HTMLParserdepth(HTMLParser):
     def __init__(self):
+        HTMLParser.__init__(self)
         self.tags = []
 
     def handle_starttag(self, tag, attrs):
@@ -88,6 +89,7 @@ def google_format(key):
         key= key[:ind] + '%20' + key[ind+1:]
     return key    
 
+
 def search(key):
     #url = 'https://www.google.com?q=' + key + '#q=' + key
     #result = urllib2.urlopen(url)
@@ -110,21 +112,30 @@ def get_links(key):
     return parser.links
 
 
-def build_graph_relations_from_tag_list(tags, all_tags):
-    d = {t.text : t for t in all_tags}
+def build_graph_relations_from_tag_list(tags, d):
+    print " ### building relations ###"
+    print " length : {}".format(len(tags))
     for t1 in tags:
+        print t1
         for t2 in tags:
             if t1 in d.keys() and t2 in d.keys():
-                id1 =  d[t1].tag_id
-                id2 =  d[t2].tag_id
+                id1 = d[t1].tag_id
+                id2 = d[t2].tag_id
+                print "[ADD] ajout d'arrete"
                 try:
-                    t1.edges.[id2] += 1
+                    try:
+                        d[t1].edges[id2] += 1
+                    except:
+                        d[t1].edges = {}
+                        d[t1].edges[id2] = 1
+                    try:
+                        d[t2].edges[id1] += 1
+                    except:
+                        d[t2].edges = {}
+                        d[t2].edges[id1] = 1
                 except:
-                    t1.edges[id2] = 1
-                try:
-                    t2.edges.[id2] += 1
-                except:
-                    t2.edges[id2] = 1
+                    print " NOT GOOD"
+                    traceback.print_exc()
 
 
 def crawl(key, buildGraph=False, all_tags=[]):
@@ -139,20 +150,24 @@ def crawl(key, buildGraph=False, all_tags=[]):
                 encoding = result.headers.getparam('charset')
                 page = page.decode(encoding)
                 parser.feed(page)
-                build_graph_relations_from_tag_list(parser.tags, all_tags)
-                parser.tags = []
+                if buildGraph:
+                    build_graph_relations_from_tag_list(parser.tags, all_tags)
+                    parser.tags = []
             except UnicodeDecodeError:
                 encoding = chardet.detect(page)['encoding']
                 if encoding != 'unicode':
                     page = page.decode(encoding)
                     page = page.encode('ascii', 'ignore')
                     parser.feed(page)
+                    if buildGraph:
+                        print "LA"
+                        build_graph_relations_from_tag_list(parser.tags, all_tags)
+                        parser.tags = []
                     print 'success'        
             except:
-                #traceback.print_exc()
-                pass
+                print "##########ERROR#########"
         except:
-            #traceback.print_exc()
+            traceback.print_exc()
             print " BAD LINK : {}".format(l)
     
 
@@ -166,16 +181,20 @@ def build_tag_list():
 
 
 def build_graph():
-
+    print "BUILDING GRAPH"
     all_tags = models.Tag.objects(banned__ne=True)
-    crawl('medecine', True, all_tags)
+    d = {t.text: t for t in all_tags}
+    crawl('medecine', True, d)
     l = models.Question.get_all_symptome()
-    print l 
     for s in l:
         print s
-        crawl(s.encode('UTF-8'), True, all_tags)
+        crawl(s.encode('UTF-8'), True, d)
     for t in all_tags:
         t.save()
+
+
+def main():
+    build_graph()
 
 
 if __name__ == "__main__":
