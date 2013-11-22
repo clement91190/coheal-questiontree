@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+      <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+      <script> 
+          function bannir_tag(id)
+          {
+                //if (confirm("Etes vous sur de vouloir bannir ce tag?"))   
+                //{
+                var data = {
+                            tag_id:  id}
+                $.post("ban_tag", data, 
+                        (function(data, status){
+                            $("#tag" + id).remove();
+                        }));
+                //}
+            return false    
+            }</script>
+      
+      <title> Editeur des tags</title>
+  </head>
+ 
+  <body>
+    <div>
+        <p>ici on peut bannir des tags </p>
+    </div>
+ 
+    {% for t in tags %}
+    <div class='tagsdisplay' id="tag{{t.tag_id}}">
+        <form>
+            {{t.tag_id}} <label style="font-weight:bold;"> {{t.text}}  </label> apparitions : {{t.appearance}} <button class ='modify' id="bn{{t.tag_id}}"> Bannir</button>
+        </form>
+    </div>            
+     <script> 
+
+        $("#bn" + {{t.tag_id}}).click((function(){return bannir_tag({{t.tag_id}})})); 
+     </script>
+
+
+    
+    {% endfor %}
+
+
+    <h1> Banned Tags </h1>
+    <p>
+    {% for t in ban_tags %}
+
+       {{ t.text}}
+    {% endfor %}
+    </p>
+</body>
+</html>
