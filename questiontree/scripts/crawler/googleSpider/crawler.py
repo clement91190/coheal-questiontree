@@ -7,10 +7,15 @@ import chardet
 import re
 import questiontree.db.models as models
 
+""" The aim of this file is to crawl webpage from google search, 
+so that we can find tags and build a graph of relations between this tags. """
+
 
 class HTMLParserdepth(HTMLParser):
+    """ Parser for the webpages coming from different links from google"""
     def __init__(self):
         HTMLParser.__init__(self)
+        """ list of tags encoutered by the parser"""
         self.tags = []
 
     def handle_starttag(self, tag, attrs):
@@ -28,11 +33,12 @@ class HTMLParserdepth(HTMLParser):
                     fich.write(w)
                     self.tags.append(w)
                     #print w, t
-                    fich.write('\n')
+                    #fich.write('\n')
 
 
 class MyHTMLParser(HTMLParser):
-   
+    """general crawler for any html file, use a list l of 
+    html tags to find the links in the page"""
     def __init__(self, l):
         HTMLParser.__init__(self)
         self.cursor = 0
@@ -42,6 +48,7 @@ class MyHTMLParser(HTMLParser):
         self.links = []
     
     def google_link(self, str):
+        """ get the real link from google links"""
         return str[7:str.find('&sa')]
 
     def handle_starttag(self, tag, attrs):
@@ -84,6 +91,8 @@ class MyHTMLParser(HTMLParser):
 
 
 def google_format(key):
+    """ change the keyword to replace certain character in the google 
+    search ( for instance spaces)"""
     while key.find(" ") >= 0:
         ind = key.find(" ")
         key= key[:ind] + '%20' + key[ind+1:]
@@ -91,6 +100,8 @@ def google_format(key):
 
 
 def search(key):
+    """function to run a search on google and return
+    the html file"""
     #url = 'https://www.google.com?q=' + key + '#q=' + key
     #result = urllib2.urlopen(url)
     request = urllib2.Request('')
@@ -103,6 +114,7 @@ def search(key):
 
 
 def get_links(key):
+    """ return the links return by the search """
     res = search(key).read()
     #print res
     l = [('html', []), ('body', []), ('div', [('id', 'center_col')]),
@@ -112,33 +124,36 @@ def get_links(key):
     return parser.links
 
 
-def build_graph_relations_from_tag_list(tags, d):
+def build_graph_relations_from_tag_list(tags, tag_dict):
+    """ look in the tags returned if to of them are in the 
+    database, and if they are, add the relation """
     print " ### building relations ###"
     print " length : {}".format(len(tags))
     for t1 in tags:
         print t1
         for t2 in tags:
-            if t1 in d.keys() and t2 in d.keys():
-                id1 = d[t1].tag_id
-                id2 = d[t2].tag_id
+            if t1 in tag_dict.keys() and t2 in tag_dict.keys():
+                id1 = tag_dict[t1].tag_id
+                id2 = tag_dict[t2].tag_id
                 print "[ADD] ajout d'arrete"
                 try:
                     try:
-                        d[t1].edges[id2] += 1
+                        tag_dict[t1].edges[id2] += 1
                     except:
-                        d[t1].edges = {}
-                        d[t1].edges[id2] = 1
+                        tag_dict[t1].edges = {}
+                        tag_dict[t1].edges[id2] = 1
                     try:
-                        d[t2].edges[id1] += 1
+                        tag_dict[t2].edges[id1] += 1
                     except:
-                        d[t2].edges = {}
-                        d[t2].edges[id1] = 1
+                        tag_dict[t2].edges = {}
+                        tag_dict[t2].edges[id1] = 1
                 except:
                     print " NOT GOOD"
                     traceback.print_exc()
 
 
 def crawl(key, buildGraph=False, all_tags=[]):
+    """ crawl the result of the search based on the key"""
     links = get_links(key)
     parser = HTMLParserdepth()
     for l in links:
