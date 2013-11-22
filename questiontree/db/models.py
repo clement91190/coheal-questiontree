@@ -1,6 +1,6 @@
 # -*-coding:Utf-8 -*
 from mongoengine import Document, StringField, IntField, ListField,\
-    register_connection, BooleanField, DictField
+    register_connection, BooleanField, DictField, FloatField
 
 
 QUESTION_URI = 'mongodb://clement91190:rafiki@lafleur.mongohq.com:10078/app18535327'
@@ -24,6 +24,8 @@ class Question(Document):
     symptome = StringField()
     question_text = StringField()
     answer_choices = ListField()
+    logic = DictField()  # Dictionary to link an answer_choice to a list of keyword
+    priority = FloatField()
 
     TYPE_SYMPTOME = 2
     TYPE_GENERIQUE = 1
@@ -45,8 +47,6 @@ class Tag(Document):
     tag_id = IntField()
     text = StringField()
     translation = StringField()
-    appearance = IntField()
-    edges = DictField()  # key (ind_tag)-> weight
     banned = BooleanField()
 
     @staticmethod
@@ -54,6 +54,12 @@ class Tag(Document):
         for i in Tag.objects(appearance__lt=2):
             print "delete {} ".format(i)
             i.delete()
+
+    @staticmethod
+    def search_autocomplete(key):
+        """query for the autocompletion """
+        return [t.text for t in Tag.objects(text__startswith=key)][:5]
+
 
 
 class Graph(Document):

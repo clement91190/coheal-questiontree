@@ -6,6 +6,12 @@ import traceback
 import json
 
 
+@app.route('/autocomplete_tags')
+#TODO add to the tag page
+def autocomplete_tags():
+    return render_template('autocomplet_tags.html')
+        
+
 @app.route('/tags')
 def tags():
     """display an interface to see tags and ban some of them"""
@@ -20,6 +26,7 @@ def tags():
         tags = models.Tag.objects(banned__ne=True)[page * 50:(page + 1) * 50]
     ban_tags = models.Tag.objects(banned=True)
     return render_template('tags.html', tags=tags, ban_tags=ban_tags)
+
 
 
 @app.route('/modify')
@@ -149,6 +156,20 @@ def delquestion():
 def test():
     return render_template('test.html')
 
+
+@app.route('/search_tags')
+def search_tags():
+    """ return the first 5 tags starting with the key """
+    try:
+        key = request.args.get('key')
+        print key
+        list_of_tags = models.Tag.search_autocomplete(key)
+        result = {"found": len(list_of_tags) == 0, "tags": list_of_tags}
+        return json.dumps(result)
+    except:
+        traceback.print_exc()
+        return "coucou"
+   
 
 @app.route('/get_question')
 def get_question():
