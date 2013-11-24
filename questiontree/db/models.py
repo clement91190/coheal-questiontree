@@ -21,7 +21,7 @@ class Question(Document):
     q_id = IntField()
     q_type = IntField()
     tags = ListField()  # list of Tags #TODO delete this
-    tags_ids = ListField(ObjectIdField)
+    tags_ids = ListField()
     symptome = StringField()
     question_text = StringField()
     answer_choices = ListField()

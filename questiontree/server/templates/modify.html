@@ -2,8 +2,10 @@
 <html>
   <head>
     <meta charset="utf-8" />
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
     <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
-      <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
       <script>
           var id;
             function delete_question(id){
@@ -86,16 +88,16 @@
 
             function update_question(data, status, id){
                 // update question_text
+                response = $.parseJSON(data) ;
                 $("#lb" + id).text(
-                    $.parseJSON(data).question_text);
-                question = $.parseJSON(data) ;
+                    response.question.question_text);
                 
                 var code = "";
                 
-                for (var i =0; i< question.tags.length; i++ )
+                for (var i =0; i< response.question.tags_ids.length; i++ )
                 {
                     code += " <mark class='tags'>";
-                    code += question.tags[i] + " </mark>";
+                    code += response.tags[i]+ " </mark>";
                     code += "<button class='del'> X </button>"
                 }
 
@@ -147,12 +149,12 @@
     <div>
         <h3> Tags : </h3> 
             <div id="tg{{q.q_id}}">   
-            {% for i,t in enumerate(q.tags) %}
-            <mark class='tags'> {{ t }} </mark>
+            {% for i,t in enumerate(q.tags_ids) %}
+            <mark class='tags'> {{ tags[t] }} </mark>
             <button class='del' onclick=deltag({{q.q_id}},{{i}})> X </button>
             {% endfor %}
             </div>    
-            <input type="text" id="tt{{q.q_id}}">   
+            <input type="text" id="tt{{q.q_id}}" class="searchtags">   
         <button class='addtag' id="at{{q.q_id}}"> + </button>
         <button class='addtag' id="mt{{q.q_id}}"> Modifier </button>
         </div>
@@ -192,6 +194,21 @@
 
 
 
+    <script> 
+        $(function() {
+    $( ".searchtags" ).autocomplete({
+        source: function(request, response){
+                
+                var data = {
+                    key:  request.term};
+                $.get("search_tags", data, 
+                (function(data, status){
+                    response($.parseJSON(data).tags);
+            }));
+        }
 
+            
+    });
+  });</script>``
    </body>
 </html>

@@ -33,10 +33,13 @@ def tags():
 def modify():
     """ principal page to be able to modify the questions"""
     questions = models.Question.objects(q_type=models.Question.TYPE_SYMPTOME).order_by('q_id')
+    tags = models.Tag.objects()
+    tags_dict = {t.id: t.text for t in tags}
     return render_template(
         'modify.html',
         questions=questions,
-        enumerate=enumerate)
+        enumerate=enumerate,
+        tags=tags_dict)
 
 
 @app.route('/modifyone')
@@ -127,9 +130,12 @@ def addtag():
         question = models.Question.objects(q_id=q_id).first()
         question.tags_ids.append(tag.id)
         question.save()
-        response = {"question": question.to_json(), "tags": models.Tag.objects(id__in=question.tags_ids)}
+        tags = models.Tag.objects(id__in=question.tags_ids)
+        tags_list = [t.text for t in tags]
+        response = {"question": json.loads(question.to_json()), "tags": tags_list}
         return json.dumps(response)
     except:
+        print "##fail##"
         print traceback.print_exc()
         return False
 
@@ -145,11 +151,13 @@ def del_tag():
         question = models.Question.objects(q_id=q_id).first()
         del(question.tags_ids[tag_id])
         question.save()
-        return question.to_json()
+        tags = models.Tag.objects(id__in=question.tags_ids)
+        tags_list = [t.text for t in tags]
+        response = {"question": json.loads(question.to_json()), "tags": tags_list}
+        return json.dumps(response)
     except:
+        print "##fail##"
         print traceback.print_exc()
-        print q_id
-        print tag_id
         return False
 
 
@@ -168,8 +176,8 @@ def delquestion():
 def test():
     question = models.Question.objects().first()
     tags = models.Tag.objects(id__in=question.tags_ids)
-    response = {"question": json.loads(question.to_json()), "tags": tags.to_json()}
-    return response
+    response = {"question": json.loads(question.to_json()), "tags": json.loads(tags.to_json())}
+    return json.dumps(response)
 # return render_template('test.html')
 
 
