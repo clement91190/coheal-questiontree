@@ -7,8 +7,9 @@ import json
 
 
 @app.route('/autocomplete_tags')
-#TODO add to the tag page
+#TODO add to the tag page and delete
 def autocomplete_tags():
+    """ temporary page to test autocomplete """ 
     return render_template('autocomplet_tags.html')
         
 
@@ -28,11 +29,10 @@ def tags():
     return render_template('tags.html', tags=tags, ban_tags=ban_tags)
 
 
-
 @app.route('/modify')
 def modify():
+    """ principal page to be able to modify the questions"""
     questions = models.Question.objects(q_type=models.Question.TYPE_SYMPTOME).order_by('q_id')
-    print len(questions)
     return render_template(
         'modify.html',
         questions=questions,
@@ -40,7 +40,9 @@ def modify():
 
 
 @app.route('/modifyone')
+#TODO see if it is useful to keep ...
 def modifyone():
+    """ access to one of the questions """
     try:
         id = request.args.get('id')
         id = int(id)
@@ -51,15 +53,18 @@ def modifyone():
             enumerate=enumerate)
     except:
         traceback.print_exc()
-        return "not good" 
+        return "not good"
 
 
 @app.route('/help')
 def help():
+    """ Help Page, empty now ... """
+#TODO Complete for people using the interface
     return render_template('help.html')
 
 
 @app.route('/question-generique')
+#TODO Clean this  ?
 def questiongeneriques():
     try:
         questions = models.Question.objects(q_type=models.Question.TYPE_GENERIQUE)
@@ -70,6 +75,7 @@ def questiongeneriques():
 
 @app.route('/simu')
 def simulate():
+    """ Page to simulate the questions """
     return render_template('simulate.html')
 
 
@@ -81,9 +87,11 @@ def ban_tag():
     tag.banned = True
     tag.save()
     return "ok"
- 
+
+
 @app.route('/findandmodify', methods=['POST'])
 def findandmodify():
+    """ modify the question """
     try: 
         q_id = request.form['q_id']
         qtext = request.form['qtext']
@@ -119,7 +127,8 @@ def addtag():
         question = models.Question.objects(q_id=q_id).first()
         question.tags_ids.append(tag.id)
         question.save()
-        return question.to_json()
+        response = {"question": question.to_json(), "tags": models.Tag.objects(id__in=question.tags_ids)}
+        return json.dumps(response)
     except:
         print traceback.print_exc()
         return False
@@ -127,13 +136,14 @@ def addtag():
 
 @app.route('/deltag', methods=['POST'])
 def del_tag():
+    #TODO Change the way we access tags...
     try:
         q_id = request.form['q_id']
         tag_id = request.form['tag_id']
         tag_id = int(tag_id)
         q_id = int(q_id)
         question = models.Question.objects(q_id=q_id).first()
-        del(question.tags[tag_id])
+        del(question.tags_ids[tag_id])
         question.save()
         return question.to_json()
     except:
@@ -145,6 +155,7 @@ def del_tag():
 
 @app.route('/delquestion', methods=['POST'])
 def delquestion():
+    """ delete a question with the id given """
     try:
         q_id = request.form['q_id']
         models.Question.objects(q_id=q_id).first().delete()
@@ -155,7 +166,11 @@ def delquestion():
 
 @app.route('/test')
 def test():
-    return render_template('test.html')
+    question = models.Question.objects().first()
+    tags = models.Tag.objects(id__in=question.tags_ids)
+    response = {"question": json.loads(question.to_json()), "tags": tags.to_json()}
+    return response
+# return render_template('test.html')
 
 
 @app.route('/search_tags')

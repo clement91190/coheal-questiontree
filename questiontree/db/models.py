@@ -64,6 +64,8 @@ class Tag(Document):
     @staticmethod
     def get_create(key):
         res, created = Tag.objects.get_or_create(text = key)
+        if created:
+            res.save()
         return res
 
 class Graph(Document):
