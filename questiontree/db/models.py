@@ -1,6 +1,6 @@
 # -*-coding:Utf-8 -*
 from mongoengine import Document, StringField, IntField, ListField,\
-    register_connection, BooleanField, DictField, FloatField
+    register_connection, BooleanField, DictField, FloatField, ObjectIdField
 
 
 QUESTION_URI = 'mongodb://clement91190:rafiki@lafleur.mongohq.com:10078/app18535327'
@@ -20,7 +20,8 @@ class Question(Document):
         'collection': 'question'}
     q_id = IntField()
     q_type = IntField()
-    tags = ListField()
+    tags = ListField()  # list of Tags #TODO delete this
+    tags_ids = ListField(ObjectIdField)
     symptome = StringField()
     question_text = StringField()
     answer_choices = ListField()
@@ -60,7 +61,10 @@ class Tag(Document):
         """query for the autocompletion """
         return [t.text for t in Tag.objects(text__startswith=key)][:5]
 
-
+    @staticmethod
+    def get_create(key):
+        res, created = Tag.objects.get_or_create(text = key)
+        return res
 
 class Graph(Document):
     """ Graph is a collection of Question with a Node/edges structure """

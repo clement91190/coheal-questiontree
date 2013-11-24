@@ -115,8 +115,9 @@ def addtag():
     try:
         q_id = request.form['q_id']
         tag_text = request.form['tag_text']
+        tag = models.Tag.get_create(tag_text)
         question = models.Question.objects(q_id=q_id).first()
-        question.tags.append(tag_text)
+        question.tags_ids.append(tag.id)
         question.save()
         return question.to_json()
     except:
