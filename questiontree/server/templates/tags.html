@@ -18,8 +18,9 @@
 {% block title %}   Editeur des tags {% endblock %}
  
 {% block body %}      
+{{ super()}}
     <div>
-        <p>ici on peut bannir des tags </p>
+        <p>ici on peut supprimer des tags (Pour ajouter aller sur la page des question) </p>
     </div>
  
     {% for t in tags %}

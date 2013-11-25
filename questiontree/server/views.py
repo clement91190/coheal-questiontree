@@ -24,8 +24,8 @@ def tags():
     if page is None:
         page = 0
     #tags = models.Tag.objects(banned__ne=True)[page * 50:(page + 1) * 50]
-    tags = models.Tag.objects()
-    return render_template('tags.html', tags=tags )
+    tags = models.Tag.objects().order_by('-id')
+    return render_template('tags.html', tags=tags)
 
 
 @app.route('/modify')
