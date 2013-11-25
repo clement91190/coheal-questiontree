@@ -120,6 +120,58 @@ function deltag(q_id, tag_id){
     $.post("deltag", data,(function(data, status){
         update_question(data, status, q_id)}) );
     }
+
+function delete_answer(q_id, ans_id){
+    var data = {
+        q_id: q_id,
+        ans_id : ans_id};
+    $.post("delete_answer_from_question", data,(function(data, status){
+       }) );
+    return false;
+    }
+
+function modify_answer(q_id, ans_id){
+    var data = {
+        q_id: q_id,
+        ans_id : ans_id,
+        ans_text: $("#ans" + q_id + ans_id).val() }
+    $.post("modify_answer_from_question", data,(function(data, status){
+       }) );
+    return false;
+    }
+
+function delete_tag_inference_in_answer(q_id, ans_id, tag_num){
+    alert('coucou');
+    var data = {
+        q_id: q_id,
+        ans_id : ans_id,
+        tag_num : tag_num}
+    $.post("delete_tag_inference_in_answer", data,(function(data, status){
+       }) );
+    return false;
+    }
+
+function add_tag_inference_in_answer(q_id, ans_id){
+    var data = {
+        q_id: q_id,
+        ans_id : ans_id,
+        ans_tag_text : $("#ans_tag"+ q_id + ans_id).val()}
+    $.post("add_tag_inference_in_answer", data,(function(data, status){
+       }) );
+    return false;
+    }
+
+function add_answer(q_id){
+    var data = {
+        q_id: q_id,
+        ans_text : $("#new_ans"+ q_id).val()}
+    alert($("#new_ans"+ q_id).val());
+    $.post("add_answer", data,(function(data, status){
+       }) );
+    return false;
+    }
+
+
 $(function() {
     $( ".searchtags" ).autocomplete({
         source: function(request, response){

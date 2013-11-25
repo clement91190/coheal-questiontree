@@ -24,7 +24,7 @@ class Question(Document):
     symptome = StringField()
     question_text = StringField()
     answer_choices = ListField()
-    logic = DictField()  # Dictionary to link an answer_choice to a list of keyword
+    logic = DictField()  # Dictionary to link an answer_choice to a list of a tupele (bool, ObjectId of Tag)
     priority = FloatField()
 
     TYPE_SYMPTOME = 2

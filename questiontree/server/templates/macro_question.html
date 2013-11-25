@@ -12,7 +12,7 @@
             <div id="tg{{q.q_id}}">   
             {% for i,t in enumerate(q.tags_ids) %}
             <mark class='tags'> {{ tags[t] }} </mark>
-            <button class='del' onclick=deltag({{q.q_id}},{{i}})> X </button>
+            <button class='del' onclick="return deltag({{q.q_id}},{{i}})"> X </button>
             {% endfor %}
             </div>    
             <input type="text" id="tt{{q.q_id}}" class="searchtags">   
@@ -36,6 +36,29 @@
  
      <form>
          <h3> Reponses et mots-cles associes: </h3>
+            {%for i,ans in enumerate(q.answer_choices) %}
+            <h4> {{ i+1 }} {{ ans }}  </h4>
+            <input type= "text" value="{{ans}}" id="ans{{q.q_id}}{{i}}"> </input>
+            <button class='del'  onclick="return delete_answer({{q.q_id}},{{i}})" > X </button>
+            <button class='modify' onclick="return modify_answer({{q.q_id}},{{i}})" > modifier </button>
+            <div>
+                <label> Mots-cles associes </label>
+                {%for j, (pos, tag_id) in enumerate(q.logic[ans]) %}
+                    {% if pos %}
+                    <mark class='tags'> {{ tags[tag_id] }} </mark>
+                    {% else %}
+                    <mark class='anti_tags'> {{ tags[tag_id] }} </mark>
+                    {% endif %}
+
+                    <button class='del' onclick="return delete_tag_inference_in_answer({{q.q_id}},{{i}},{{j}})" > X </button>
+                {% endfor %}
+                <input type= "text" class="searchtags" id="ans_tag{{q.q_id}}{{i}}"> </input>
+                <button class='addtag' onclick="return add_tag_inference_in_answer({{q.q_id}},{{i}})" > + </button>
+                </div>   
+                {% endfor %}
+            <h4> Ajouter une reponse : </h4>
+            <input type= "text"  value="{{ans}}" id="new_ans{{q.q_id}}"> </input>
+            <button class='addtag' onclick="return add_answer({{q.q_id}})" > + </button>
      </form>
   
 

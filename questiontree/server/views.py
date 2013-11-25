@@ -145,7 +145,6 @@ def addtag():
 
 @app.route('/deltag', methods=['POST'])
 def del_tag():
-    #TODO Change the way we access tags...
     try:
         q_id = request.form['q_id']
         tag_id = request.form['tag_id']
@@ -158,6 +157,109 @@ def del_tag():
         tags_list = [t.text for t in tags]
         response = {"question": json.loads(question.to_json()), "tags": tags_list}
         return json.dumps(response)
+    except:
+        print "##fail##"
+        print traceback.print_exc()
+        return False
+
+
+@app.route('/delete_answer_from_question', methods=['POST'])
+def delete_answer_from_question():
+    try:
+        q_id = request.form['q_id']
+        ans_id = request.form['ans_id']
+        ans_id = int(ans_id)
+        q_id = int(q_id)
+        question = models.Question.objects(q_id=q_id).first()
+        del(question.logic[question.answer_choices[ans_id]])
+        del(question.answer_choices[ans_id])
+        question.save()
+        return json.dumps({"success": True})
+    except:
+        print "##fail##"
+        print traceback.print_exc()
+        return False
+
+
+@app.route('/delete_tag_inference_in_answer', methods=['POST'])
+def delete_tag_inference_in_answer():
+    try:
+        q_id = request.form['q_id']
+        ans_id = request.form['ans_id']
+        tag_num = request.form['tag_num']
+        ans_id = int(ans_id)
+        q_id = int(q_id)
+        tag_num = int(tag_num)
+        question = models.Question.objects(q_id=q_id).first()
+        del(question.logic[question.answer_choices[ans_id]][tag_num])
+        question.save()
+        return json.dumps({"success": True})
+    except:
+        print "##fail##"
+        print traceback.print_exc()
+        return False
+
+
+@app.route('/modify_answer_from_question', methods=['POST'])
+def modify_answer_from_question():
+    try:
+        q_id = request.form['q_id']
+        ans_id = request.form['ans_id']
+        ans_text = request.form['ans_text']
+        ans_id = int(ans_id)
+        q_id = int(q_id)
+        #TODO move this as a function in models.
+        question = models.Question.objects(q_id=q_id).first()
+        question.logic[ans_text] = question.logic[question.answer_choices[ans_id]]
+        del(question.logic[question.answer_choices[ans_id]])
+        question.answer_choices[ans_id] = ans_text
+        question.save()
+        return json.dumps({"success": True})
+    except:
+        print "##fail##"
+        print traceback.print_exc()
+        return False
+
+ 
+@app.route('/add_tag_inference_in_answer', methods=['POST'])
+def add_tag_inference_in_answer():
+    try:
+        q_id = request.form['q_id']
+        ans_id = request.form['ans_id']
+        ans_tag_text = request.form['ans_tag_text']
+        positive = True
+        if ans_tag_text[0] == '-':
+            #this is an anti-tag
+            ans_tag_text = ans_tag_text[1:]
+            positive = False
+        tag_id = models.Tag.get_create(ans_tag_text).id
+        ans_id = int(ans_id)
+        q_id = int(q_id)
+        question = models.Question.objects(q_id=q_id).first()
+        try:
+            question.logic[question.answer_choices[ans_id]].append((positive, tag_id))
+        except:
+            question.logic[question.answer_choices[ans_id]] = []
+            question.logic[question.answer_choices[ans_id]].append((positive, tag_id))
+        question.save()
+        return json.dumps({"success": True})
+    except:
+        print "##fail##"
+        print traceback.print_exc()
+        return False
+
+
+@app.route('/add_answer', methods=['POST'])
+def add_answer():
+    try:
+        q_id = request.form['q_id']
+        ans_text = request.form['ans_text']
+        q_id = int(q_id)
+        question = models.Question.objects(q_id=q_id).first()
+        question.answer_choices.append(ans_text)
+        question.logic[ans_text] = []
+        question.save()
+        return json.dumps({"success": True})
     except:
         print "##fail##"
         print traceback.print_exc()
