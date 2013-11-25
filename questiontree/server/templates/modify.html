@@ -7,7 +7,7 @@
 
 {% block body %}
     {{ super() }}
-    {% import 'modify_one.html' as m %} 
+    {% import 'macro_question.html' as m %} 
     {% for q in questions %}
         {{ m.modify_question(q, enumerate, tags)}}
     {% endfor %}

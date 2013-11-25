@@ -43,17 +43,20 @@ def modify():
 
 
 @app.route('/modifyone')
-#TODO replace to be able to use with includes... 
 def modifyone():
     """ access to one of the questions """
     try:
         id = request.args.get('id')
         id = int(id)
-        question = models.Question.objects(q_id=id).first()
+        tags = models.Tag.objects()
+        tags_dict = {t.id: t.text for t in tags}
+        question = models.Question.objects(q_id=id)
+        print len(question)
         return render_template(
-            'modify_one.html',
-            question=question,
-            enumerate=enumerate)
+            'modify.html',
+            questions=question,
+            enumerate=enumerate,
+            tags=tags_dict)
     except:
         traceback.print_exc()
         return "not good"
