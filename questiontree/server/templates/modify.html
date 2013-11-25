@@ -7,9 +7,13 @@
 
 {% block body %}
     {{ super() }}
-    {% import 'macro_question.html' as m %} 
+    {% macro modify_question(q, enumerate, tags) %}
+    <div class='question' id="q{{q.q_id}}">
+        {% include "modify_one_template.html" %}
+    </div>
+    {% endmacro %} 
     {% for q in questions %}
-        {{ m.modify_question(q, enumerate, tags)}}
+        {{ modify_question(q, enumerate, tags)}}
     {% endfor %}
 
 {% endblock %}

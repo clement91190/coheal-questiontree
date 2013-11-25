@@ -171,7 +171,10 @@ def delete_answer_from_question():
         ans_id = int(ans_id)
         q_id = int(q_id)
         question = models.Question.objects(q_id=q_id).first()
-        del(question.logic[question.answer_choices[ans_id]])
+        try:
+            del(question.logic[question.answer_choices[ans_id]])
+        except:
+            pass
         del(question.answer_choices[ans_id])
         question.save()
         return json.dumps({"success": True})
@@ -193,7 +196,7 @@ def delete_tag_inference_in_answer():
         question = models.Question.objects(q_id=q_id).first()
         del(question.logic[question.answer_choices[ans_id]][tag_num])
         question.save()
-        return json.dumps({"success": True})
+        return template_modify_all_tags(question)
     except:
         print "##fail##"
         print traceback.print_exc()
@@ -214,7 +217,7 @@ def modify_answer_from_question():
         del(question.logic[question.answer_choices[ans_id]])
         question.answer_choices[ans_id] = ans_text
         question.save()
-        return json.dumps({"success": True})
+        return template_modify_all_tags(question)
     except:
         print "##fail##"
         print traceback.print_exc()
@@ -242,7 +245,7 @@ def add_tag_inference_in_answer():
             question.logic[question.answer_choices[ans_id]] = []
             question.logic[question.answer_choices[ans_id]].append((positive, tag_id))
         question.save()
-        return json.dumps({"success": True})
+        return template_modify_all_tags(question)
     except:
         print "##fail##"
         print traceback.print_exc()
@@ -259,7 +262,8 @@ def add_answer():
         question.answer_choices.append(ans_text)
         question.logic[ans_text] = []
         question.save()
-        return json.dumps({"success": True})
+        #return json.dumps({"success": True})
+        return template_modify_all_tags(question)
     except:
         print "##fail##"
         print traceback.print_exc()
@@ -272,7 +276,7 @@ def delquestion():
     try:
         q_id = request.form['q_id']
         models.Question.objects(q_id=q_id).first().delete()
-        return json.dumps({'success': True})
+        return ""
     except:
         print traceback.print_exc()
 
@@ -287,7 +291,7 @@ def update_priority_question():
         q = models.Question.objects(q_id=q_id).first()
         q.priority = priority
         q.save()
-        return json.dumps({'success': True})
+        return template_modify_all_tags(q)
     except:
         print traceback.print_exc()
 
@@ -324,4 +328,16 @@ def get_question():
         return question.to_json() 
     except:
         traceback.print_exc()
-        return False 
+        return False
+
+
+def template_modify_all_tags(question):
+    tags = models.Tag.objects()
+    tags_dict = {t.id: t.text for t in tags}
+    return template_modify(question, tags_dict) 
+  
+
+def template_modify(question, tags):
+    return render_template(
+        "modify_one_template.html", q=question,
+        tags=tags, enumerate=enumerate)

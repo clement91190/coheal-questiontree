@@ -63,6 +63,27 @@
     padding 15px 15px 15px 15px ;
 }
 
+.anti_tags {
+    -moz-box-shadow:inset 0px 1px 0px 0px #fceaca;
+    -webkit-box-shadow:inset 0px 1px 0px 0px #fceaca;
+    box-shadow:inset 0px 1px 0px 0px #fceaca;
+    background-color:#fe1a00;
+    border:1px solid #eeb44f;
+    display:inline-block;
+    color:#ffffff;
+    font-family:Arial;
+    font-size:18px;
+    font-weight:bold;
+    font-style:normal;
+    height:30px;
+    line-height:30px;
+    text-decoration:none;
+    text-align:center;
+    text-shadow:1px 1px 0px #ce8e28;
+    padding 15px 15px 15px 15px ;
+}
+
+
 .del {
     -moz-box-shadow:inset 0px 1px 0px 0px #f29c93;
     -webkit-box-shadow:inset 0px 1px 0px 0px #f29c93;

@@ -84,27 +84,6 @@ function postqtext(id){
             })
         );}
 
-function update_question(data, status, id){
-    // update question_text
-    response = $.parseJSON(data) ;
-    $("#lb" + id).text(
-        response.question.question_text);
-    
-    var code = "";
-    
-    for (var i =0; i< response.question.tags_ids.length; i++ )
-    {
-        code += " <mark class='tags'>";
-        code += response.tags[i]+ " </mark>";
-        code += "<button class='del'> X </button>"
-    }
-
-    $("#tg" + id).html(code);
-    $("#tg" + id).children(".del").each(function(i){
-        $( this ).click(function(){deltag(id, i)})});
-
-}
-
 function addtag(id){
     var data = {
         q_id:  id,
@@ -126,7 +105,7 @@ function delete_answer(q_id, ans_id){
         q_id: q_id,
         ans_id : ans_id};
     $.post("delete_answer_from_question", data,(function(data, status){
-       }) );
+        change_question_div_with_html(q_id, data)}) );
     return false;
     }
 
@@ -136,18 +115,17 @@ function modify_answer(q_id, ans_id){
         ans_id : ans_id,
         ans_text: $("#ans" + q_id + ans_id).val() }
     $.post("modify_answer_from_question", data,(function(data, status){
-       }) );
+        change_question_div_with_html(q_id, data)}) );
     return false;
     }
 
 function delete_tag_inference_in_answer(q_id, ans_id, tag_num){
-    alert('coucou');
     var data = {
         q_id: q_id,
         ans_id : ans_id,
         tag_num : tag_num}
     $.post("delete_tag_inference_in_answer", data,(function(data, status){
-       }) );
+        change_question_div_with_html(q_id, data)}) );
     return false;
     }
 
@@ -157,7 +135,7 @@ function add_tag_inference_in_answer(q_id, ans_id){
         ans_id : ans_id,
         ans_tag_text : $("#ans_tag"+ q_id + ans_id).val()}
     $.post("add_tag_inference_in_answer", data,(function(data, status){
-       }) );
+        change_question_div_with_html(q_id, data)}) );
     return false;
     }
 
@@ -165,25 +143,37 @@ function add_answer(q_id){
     var data = {
         q_id: q_id,
         ans_text : $("#new_ans"+ q_id).val()}
-    alert($("#new_ans"+ q_id).val());
     $.post("add_answer", data,(function(data, status){
-       }) );
+        change_question_div_with_html(q_id, data)}) );
     return false;
     }
 
 
-$(function() {
-    $( ".searchtags" ).autocomplete({
-        source: function(request, response){
-                
-                var data = {
-                    key:  request.term};
-                $.get("search_tags", data, 
-                (function(data, status){
-                    response($.parseJSON(data).tags);
-            }));
-        }
 
-            
-    });
-    });
+function update_question(data, status, id){
+    // update question_text
+    response = $.parseJSON(data) ;
+    $("#lb" + id).text(
+        response.question.question_text);
+    
+    var code = "";
+    
+    for (var i =0; i< response.question.tags_ids.length; i++ )
+    {
+        code += " <mark class='tags'>";
+        code += response.tags[i]+ " </mark>";
+        code += "<button class='del'> X </button>"
+    }
+
+    $("#tg" + id).html(code);
+    $("#tg" + id).children(".del").each(function(i){
+        $( this ).click(function(){deltag(id, i)})});
+
+}
+
+function change_question_div_with_html(question_id, html)
+{
+    $("#q" + question_id).html(html)
+}
+
+

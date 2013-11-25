@@ -1,5 +1,3 @@
-{% macro modify_question(q, enumerate, tags) %}
-<div class='question' id="q{{q.q_id}}">
         <form>
             <h2> Symptome : {{q.q_id}} <label id="lbs{{q.q_id}}">{{q.symptome}} </label></h2>
             <input type="text" id="ts{{q.q_id}}">   
@@ -42,7 +40,7 @@
             <button class='del'  onclick="return delete_answer({{q.q_id}},{{i}})" > X </button>
             <button class='modify' onclick="return modify_answer({{q.q_id}},{{i}})" > modifier </button>
             <div>
-                <label> Mots-cles associes </label>
+                <label> implique => </label>
                 {%for j, (pos, tag_id) in enumerate(q.logic[ans]) %}
                     {% if pos %}
                     <mark class='tags'> {{ tags[tag_id] }} </mark>
@@ -62,14 +60,7 @@
      </form>
   
 
-
-
- </div>
-                
-                
-                
-     <script> 
-
+ <script> 
         $("#ts{{q.q_id}}").hide(); // hide the form 
         $("#tt{{q.q_id}}").hide(); // hide the form 
         $("#qt{{q.q_id}}").hide(); // hide the form 
@@ -85,7 +76,23 @@
         $("#s" + {{q.q_id}}).hide()
         $("#ss" + {{q.q_id}}).hide()
 
+        $(function() {
+            $( ".searchtags" ).autocomplete({
+                source: function(request, response){
+                        
+                        var data = {
+                            key:  request.term};
+                        $.get("search_tags", data, 
+                        (function(data, status){
+                            response($.parseJSON(data).tags);
+                    }));
+                }
+
+                    
+            });
+            });
+
+
      </script>
 
 
-{% endmacro %} 
