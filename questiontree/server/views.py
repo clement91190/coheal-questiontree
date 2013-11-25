@@ -24,9 +24,8 @@ def tags():
     if page is None:
         page = 0
     #tags = models.Tag.objects(banned__ne=True)[page * 50:(page + 1) * 50]
-    tags = models.Tag.objects(banned__ne=True)
-    ban_tags = models.Tag.objects(banned=True)
-    return render_template('tags.html', tags=tags, ban_tags=ban_tags)
+    tags = models.Tag.objects()
+    return render_template('tags.html', tags=tags )
 
 
 @app.route('/modify')
@@ -85,14 +84,13 @@ def simulate():
     return render_template('simulate.html')
 
 
-@app.route('/ban_tag', methods=['POST'])
-def ban_tag():
-    """ ban the corresponding tag ( change it's status in the database) """
+@app.route('/delete_tag_from_db', methods=['POST'])
+def delete_tag_from_db():
+    """delete the tag from the database"""
     tag_id = request.form['tag_id']
     tag = models.Tag.objects(id=tag_id).first()
-    tag.banned = True
-    tag.save()
-    return "ok"
+    tag.delete()
+    return ""
 
 
 @app.route('/findandmodify', methods=['POST'])

@@ -1,53 +1,34 @@
-<!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
-      <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-      <script> 
+{% extends "global_layout.html" %}
+
+{% block head %}
+{{super()}}
+<script> 
           function bannir_tag(id)
           {
-                //if (confirm("Etes vous sur de vouloir bannir ce tag?"))   
-                //{
                 var data = {
                             tag_id:  id}
-                $.post("ban_tag", data, 
+                $.post("delete_tag_from_db", data, 
                         (function(data, status){
                             $("#tag" + id).remove();
                         }));
-                //}
-            return false    
-            }</script>
-      
-      <title> Editeur des tags</title>
-  </head>
+            return false;    
+            }
+</script>
+{% endblock %}      
+{% block title %}   Editeur des tags {% endblock %}
  
-  <body>
+{% block body %}      
     <div>
         <p>ici on peut bannir des tags </p>
     </div>
  
     {% for t in tags %}
-    <div class='tagsdisplay' id="tag{{t.text}}">
+    <div class='tagsdisplay' id="tag{{t.id}}">
         <form>
-             <label style="font-weight:bold;"> {{t.text}}  </label>  <button class ='modify' id="bn{{t.text}}"> Bannir</button>
+             <label style="font-weight:bold;"> {{t.text}}  </label>  <button class ='del' onclick="return bannir_tag('{{t.id}}')"> X</button>
         </form>
     </div>            
-     <script> 
-        $("#bn" + "{{t.text}}").click((function(){return bannir_tag("{{t.id}}")})); 
-     </script>
-
-
-    
     {% endfor %}
 
+{% endblock %}
 
-    <h1> Banned Tags </h1>
-    <p>
-    {% for t in ban_tags %}
-
-       {{ t.text}}
-    {% endfor %}
-    </p>
-</body>
-</html>
