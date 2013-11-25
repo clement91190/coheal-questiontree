@@ -1,131 +1,68 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8" />
-        <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
-        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-        <script>
-            function add_mode(id){  
-                $("#tt" + id).show();
-                $("#at" + id).hide();
-                $("#mt" + id).show();
-                return false;}
-
-            function normal_mode(id){
-                $("#mt" + id).hide()
-                $("#at" + id).show()
-                addtag(id);
-                $("#tt" + id).hide();
-                return false;}
-            
-            function modifier(id){  
-                $("#qt" + id).show();
-                $("#s" + id).show()
-                $("#m" + id).hide()
-                return false;}
-
-            function sauver(id){
-                $("#m" + id).show()
-                $("#s" + id).hide()
-                $("#qt" + id).hide();
-                postqtext(id);
-                return false;}
-            
-            var machin = 0;
-
-            function postqtext(id){
-                var data = {
-                    q_id:  id,
-                    qtext: $("#qt" + id).val()};
-                $.post("findandmodify", data, 
-                    (function(data, status){
-                        $("#lb" + id).text(
-                        $.parseJSON(data).question_text)
-                        machin = $.parseJSON(data)
-                        })
-                    );}
-
-            function update_question(data, status, id){
-                // update question_text
-                $("#lb" + id).text(
-                    $.parseJSON(data).question_text);
-                question = $.parseJSON(data) ;
-                
-                var code = "";
-                
-                for (var i =0; i< question.tags.length; i++ )
-                {
-                    code += " <mark class='tags'>";
-                    code += question.tags[i] + " </mark>";
-                    code += "<button class='del'> X </button>"
-                }
-
-                $("#tg" + id).html(code);
-                $("#tg" + id).children(".del").each(function(i){
-                    $( this ).click(function(){deltag(id, i)})});
-
-            }
-
-            function addtag(id){
-                var data = {
-                    q_id:  id,
-                    tag_text: $("#tt" + id).val()};
-                $.post("addtag", data,(function(data, status){
-                    update_question(data, status, id)}) );
-                }
-
-            function deltag(q_id, tag_id){
-                var data = {
-                    q_id: q_id,
-                    tag_id : tag_id}
-                $.post("deltag", data,(function(data, status){
-                    update_question(data, status, id)}) );
-                }
-        </script>
-        
-        
-        <title>Modify one </title>
-    </head>
- 
-    <body>
-     <div class='question'>
-        <h2> Symptome : {{question.q_id}} {{question.symptome}}</h2>
-            <div>
-             <h3> Tags : </h3> 
-                <div id="tg{{question.q_id}}">   
-                {% for i,t in enumerate(question.tags) %}
-                <mark class='tags'> {{ t }} </mark>
-                <button class='del' onclick=deltag({{question.q_id}},{{i}})> X </button>
-                {% endfor %}
-                </div>    
-                <input type="text" id="tt{{question.q_id}}">   
-            <button class='addtag' id="at{{question.q_id}}"> + </button>
-            <button class='addtag' id="mt{{question.q_id}}"> Modifier </button>
-            </div>
-
-<form> 
-            <h3> Texte de la question pour le patient : </h3>
-            <label id="lb{{question.q_id}}">{{question.question_text}} </label>
-            <input type="text" id="qt{{question.q_id}}"> </input>
-            <button class ='modify' id="m{{question.q_id}}"> Modifier</button>
-            <button class ='modify' id="s{{question.q_id}}"> Sauver</button>
+{% macro modify_question(q, enumerate, tags) %}
+<div class='question' id="q{{q.q_id}}">
+        <form>
+            <h2> Symptome : {{q.q_id}} <label id="lbs{{q.q_id}}">{{q.symptome}} </label></h2>
+            <input type="text" id="ts{{q.q_id}}">   
+            <button class ='modify' id="ms{{q.q_id}}"> Modifier</button>
+            <button class ='modify' id="ss{{q.q_id}}"> Sauver</button>
+            <button class ='delquest' id="dq{{q.q_id}}"> Supprimer</button>
         </form>
-     </div>
+    <div>
+        <h3> Tags : </h3> 
+            <div id="tg{{q.q_id}}">   
+            {% for i,t in enumerate(q.tags_ids) %}
+            <mark class='tags'> {{ tags[t] }} </mark>
+            <button class='del' onclick=deltag({{q.q_id}},{{i}})> X </button>
+            {% endfor %}
+            </div>    
+            <input type="text" id="tt{{q.q_id}}" class="searchtags">   
+        <button class='addtag' id="at{{q.q_id}}"> + </button>
+        <button class='addtag' id="mt{{q.q_id}}"> Modifier </button>
+        </div>
+
+    <form> 
+            <h3> Texte de la question pour le patient : </h3>
+            <label id="lb{{q.q_id}}">{{q.question_text}} </label>
+            <input type="text" id="qt{{q.q_id}}"> </input>
+            <button class ='modify' id="m{{q.q_id}}"> Modifier</button>
+            <button class ='modify' id="s{{q.q_id}}"> Sauver</button>
+        </form>
+
+     <form>
+         <h3> Frequence de la Question ] 0 ; 1 ] 1-> tres frequent 0.01 -> tres rare : </h3>
+            <input type="text" id="pri{{q.q_id}}" value="{{q.priority}}"> </input>
+            <button class ='modify' id="spri{{q.q_id}}"> Sauver</button>
+     </form>
+ 
+     <form>
+         <h3> Reponses et mots-cles associes: </h3>
+     </form>
+  
+
+
+
+ </div>
                 
                 
                 
      <script> 
 
-        var id = {{question.q_id}};
-        $("#qt{{question.q_id}}").hide(); // hide the form 
-        $("#tt{{question.q_id}}").hide(); // hide the form 
-        $("#m" + id).click((function(){return modifier(id)})); 
-        $("#s" + id).click((function(){return sauver(id)})); 
-        $("#at" + id).click((function(){return add_mode(id)}));
-        $("#mt" + id).click((function(){return normal_mode(id)}));
-        $("#mt" + id).hide()
-        $("#s" + id).hide()
+        $("#ts{{q.q_id}}").hide(); // hide the form 
+        $("#tt{{q.q_id}}").hide(); // hide the form 
+        $("#qt{{q.q_id}}").hide(); // hide the form 
+        $("#ms" + {{q.q_id}}).click((function(){return modifier_symptome({{q.q_id}})})); 
+        $("#ss" + {{q.q_id}}).click((function(){return sauver_symptome({{q.q_id}})})); 
+        $("#dq" + {{q.q_id}}).click((function(){return delete_question({{q.q_id}})})); 
+        $("#m" + {{q.q_id}}).click((function(){return modifier({{q.q_id}})})); 
+        $("#s" + {{q.q_id}}).click((function(){return sauver({{q.q_id}})})); 
+        $("#spri" + {{q.q_id}}).click((function(){return sauver_priority({{q.q_id}})})); 
+        $("#at" + {{q.q_id}}).click((function(){return add_mode({{q.q_id}})}));
+        $("#mt" + {{q.q_id}}).click((function(){return normal_mode({{q.q_id}})}));
+        $("#mt" + {{q.q_id}}).hide()
+        $("#s" + {{q.q_id}}).hide()
+        $("#ss" + {{q.q_id}}).hide()
+
      </script>
 
-    </body>
-</html>
+
+{% endmacro %} 

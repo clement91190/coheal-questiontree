@@ -120,4 +120,18 @@ function deltag(q_id, tag_id){
     $.post("deltag", data,(function(data, status){
         update_question(data, status, q_id)}) );
     }
+$(function() {
+    $( ".searchtags" ).autocomplete({
+        source: function(request, response){
+                
+                var data = {
+                    key:  request.term};
+                $.get("search_tags", data, 
+                (function(data, status){
+                    response($.parseJSON(data).tags);
+            }));
+        }
 
+            
+    });
+    });
