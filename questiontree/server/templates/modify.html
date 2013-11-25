@@ -183,9 +183,7 @@
  
      <form>
          <h3> Reponses et mots-cles associes: </h3>
-            {% for ans in question.answer_choices}
-
-
+            {% for i,ans in enumerate(q.answer_choices) %}
             {% endfor %}
      </form>
   
