@@ -44,7 +44,6 @@ class Tag(Document):
     meta = {
         'db_alias': 'question-tree-production',
         'collection': 'tags'}
-    
     tag_id = IntField()
     text = StringField()
     translation = StringField()
@@ -52,18 +51,24 @@ class Tag(Document):
 
     @staticmethod
     def clean_data():
-        for i in Tag.objects(appearance__lt=2):
-            print "delete {} ".format(i)
-            i.delete()
-
+        """ delete Tags if they apppear twice """
+        for t in Tag.objects():
+            l = Tag.objects(text=t.text)
+            if len(l) > 1:
+                l[1].delete()
+                         
     @staticmethod
     def search_autocomplete(key):
         """query for the autocompletion """
-        return [t.text for t in Tag.objects(text__startswith=key)][:5]
+        return [t.text for t in Tag.objects(text__istartswith=key)][:5]
 
     @staticmethod
     def get_create(key):
-        res, created = Tag.objects.get_or_create(text = key)
+        try:
+            res, created = Tag.objects.get_or_create(text=key)
+        except:
+            print "DATABASE NOT CLEAN MULTIPLE OBJECTS"
+            created = False
         if created:
             res.save()
         return res

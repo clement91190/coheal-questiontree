@@ -17,14 +17,13 @@ def autocomplete_tags():
 def tags():
     """display an interface to see tags and ban some of them"""
     page = request.args.get('p')
-    page = int(page)
-    if page is None:
-        page = 0
     try:
-        tags = models.Tag.objects(banned__ne=True)[page * 50:(page + 1) * 50]
+        page = int(page)
     except:
         page = 0
-        tags = models.Tag.objects(banned__ne=True)[page * 50:(page + 1) * 50]
+    if page is None:
+        page = 0
+    tags = models.Tag.objects(banned__ne=True)[page * 50:(page + 1) * 50]
     ban_tags = models.Tag.objects(banned=True)
     return render_template('tags.html', tags=tags, ban_tags=ban_tags)
 
@@ -188,7 +187,7 @@ def search_tags():
         key = request.args.get('key')
         print key
         list_of_tags = models.Tag.search_autocomplete(key)
-        result = {"found": len(list_of_tags) == 0, "tags": list_of_tags}
+        result = {"found": len(list_of_tags) != 0, "tags": list_of_tags}
         return json.dumps(result)
     except:
         traceback.print_exc()
