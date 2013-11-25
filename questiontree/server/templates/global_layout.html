@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+    <head>
+    {% block head %}
+        <meta charset="utf-8" />
+        <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+        <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+        <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+        <title>{%block title %} Generateur de Question {% endblock %} </title>    
+        
+    {% endblock %}
+    </head>
+
+
+    <body>
+    {% block body %}
+    <div id="task_bar">
+        {% block task_bar %}  
+        <div>
+            <p> Sur cette interface, vous pouvez acceder aux differentes questions et les modifier, en particulier proposer un texte comprehensible par l'utilisateur, modifier son importance ...</p>
+        </div>
+
+        <div>
+        <button class='onglet' onclick="location.href='/modify';"> Question liee a un symptome  </button>
+        <button class='onglet' onclick="location.href='https://docs.google.com/document/d/1ekkAjodN5IdhoQhNC4Inz4Mvw2NDMG4J7ssU6YAWfIA/edit?usp=sharing';"> Question generique </button>
+        </div>
+        {% endblock %} 
+    {% endblock %}
+    </div>
+    </body>
+
+</html>
