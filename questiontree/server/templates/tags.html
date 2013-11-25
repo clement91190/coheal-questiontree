@@ -28,14 +28,13 @@
     </div>
  
     {% for t in tags %}
-    <div class='tagsdisplay' id="tag{{t.tag_id}}">
+    <div class='tagsdisplay' id="tag{{t.text}}">
         <form>
-            {{t.tag_id}} <label style="font-weight:bold;"> {{t.text}}  </label> apparitions : {{t.appearance}} <button class ='modify' id="bn{{t.tag_id}}"> Bannir</button>
+             <label style="font-weight:bold;"> {{t.text}}  </label>  <button class ='modify' id="bn{{t.text}}"> Bannir</button>
         </form>
     </div>            
      <script> 
-
-        $("#bn" + {{t.tag_id}}).click((function(){return bannir_tag({{t.tag_id}})})); 
+        $("#bn" + "{{t.text}}").click((function(){return bannir_tag("{{t.id}}")})); 
      </script>
 
 

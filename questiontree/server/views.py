@@ -23,7 +23,8 @@ def tags():
         page = 0
     if page is None:
         page = 0
-    tags = models.Tag.objects(banned__ne=True)[page * 50:(page + 1) * 50]
+    #tags = models.Tag.objects(banned__ne=True)[page * 50:(page + 1) * 50]
+    tags = models.Tag.objects(banned__ne=True)
     ban_tags = models.Tag.objects(banned=True)
     return render_template('tags.html', tags=tags, ban_tags=ban_tags)
 
@@ -42,7 +43,7 @@ def modify():
 
 
 @app.route('/modifyone')
-#TODO see if it is useful to keep ...
+#TODO replace to be able to use with includes... 
 def modifyone():
     """ access to one of the questions """
     try:
@@ -85,7 +86,7 @@ def simulate():
 def ban_tag():
     """ ban the corresponding tag ( change it's status in the database) """
     tag_id = request.form['tag_id']
-    tag = models.Tag.objects(tag_id=tag_id).first()
+    tag = models.Tag.objects(id=tag_id).first()
     tag.banned = True
     tag.save()
     return "ok"
@@ -169,7 +170,22 @@ def delquestion():
         return json.dumps({'success': True})
     except:
         print traceback.print_exc()
-    
+
+
+@app.route('/update_priority_question', methods=['POST'])
+def update_priority_question():
+    """ delete a question with the id given """
+    try:
+        q_id = request.form['q_id']
+        priority = request.form['priority']
+        priority = float(priority)
+        q = models.Question.objects(q_id=q_id).first()
+        q.priority = priority
+        q.save()
+        return json.dumps({'success': True})
+    except:
+        print traceback.print_exc()
+
 
 @app.route('/test')
 def test():

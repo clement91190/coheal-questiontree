@@ -51,6 +51,14 @@
                 $("#qt" + id).hide();
                 postqtext(id);
                 return false;}
+
+            function sauver_priority(id){
+                var data = {
+                    q_id:  id,
+                    priority: $("#pri" + id).val()};
+                $.post("update_priority_question", data, 
+                    (function(data, status){}))
+                return false;}
             
             var machin = 0;
              
@@ -159,14 +167,32 @@
         <button class='addtag' id="mt{{q.q_id}}"> Modifier </button>
         </div>
 
-<form> 
+    <form> 
             <h3> Texte de la question pour le patient : </h3>
             <label id="lb{{q.q_id}}">{{q.question_text}} </label>
             <input type="text" id="qt{{q.q_id}}"> </input>
             <button class ='modify' id="m{{q.q_id}}"> Modifier</button>
             <button class ='modify' id="s{{q.q_id}}"> Sauver</button>
         </form>
-     </div>
+
+     <form>
+         <h3> Frequence de la Question ] 0 ; 1 ] 1-> tres frequent 0.01 -> tres rare : </h3>
+            <input type="text" id="pri{{q.q_id}}" value="{{q.priority}}"> </input>
+            <button class ='modify' id="spri{{q.q_id}}"> Sauver</button>
+     </form>
+ 
+     <form>
+         <h3> Reponses et mots-cles associes: </h3>
+            {% for ans in question.answer_choices}
+
+
+            {% endfor %}
+     </form>
+  
+
+
+
+ </div>
                 
                 
                 
@@ -180,6 +206,7 @@
         $("#dq" + {{q.q_id}}).click((function(){return delete_question({{q.q_id}})})); 
         $("#m" + {{q.q_id}}).click((function(){return modifier({{q.q_id}})})); 
         $("#s" + {{q.q_id}}).click((function(){return sauver({{q.q_id}})})); 
+        $("#spri" + {{q.q_id}}).click((function(){return sauver_priority({{q.q_id}})})); 
         $("#at" + {{q.q_id}}).click((function(){return add_mode({{q.q_id}})}));
         $("#mt" + {{q.q_id}}).click((function(){return normal_mode({{q.q_id}})}));
         $("#mt" + {{q.q_id}}).hide()

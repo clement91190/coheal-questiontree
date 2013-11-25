@@ -20,7 +20,6 @@ class Question(Document):
         'collection': 'question'}
     q_id = IntField()
     q_type = IntField()
-    tags = ListField()  # list of Tags #TODO delete this
     tags_ids = ListField()
     symptome = StringField()
     question_text = StringField()
@@ -44,7 +43,6 @@ class Tag(Document):
     meta = {
         'db_alias': 'question-tree-production',
         'collection': 'tags'}
-    tag_id = IntField()
     text = StringField()
     translation = StringField()
     banned = BooleanField()
@@ -60,7 +58,7 @@ class Tag(Document):
     @staticmethod
     def search_autocomplete(key):
         """query for the autocompletion """
-        return [t.text for t in Tag.objects(text__istartswith=key)][:5]
+        return [t.text for t in Tag.objects(text__istartswith=key,banned__ne=True)][:5]
 
     @staticmethod
     def get_create(key):
