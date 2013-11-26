@@ -1,44 +1,44 @@
         <form>
-            <h2> Symptome : {{q.q_id}} <label id="lbs{{q.q_id}}">{{q.symptome}} </label>  <a href= https://docs.google.com/document/d/1uj6_exWl9HDLTM74iqK9frgQIfrCpbAdFSHFexeJJlw/edit#> AIDE ? </a></h2>
-            <input type="text" id="ts{{q.q_id}}">   
-            <button class ='modify' id="ms{{q.q_id}}"> Modifier</button>
-            <button class ='modify' id="ss{{q.q_id}}"> Sauver</button>
-            <button class ='delquest' id="dq{{q.q_id}}"> Supprimer</button>
+            <h2> Symptome : <label id="lbs{{q.id}}">{{q.symptome}} </label>  <a href= https://docs.google.com/document/d/1uj6_exWl9HDLTM74iqK9frgQIfrCpbAdFSHFexeJJlw/edit#> AIDE ? </a></h2>
+            <input type="text" id="ts{{q.id}}">   
+            <button class ='modify' id="ms{{q.id}}"> Modifier</button>
+            <button class ='modify' id="ss{{q.id}}"> Sauver</button>
+            <button class ='delquest' id="dq{{q.id}}"> Supprimer</button>
         </form>
     <div>
         <h3> Tags : </h3> 
-            <div id="tg{{q.q_id}}">   
+            <div id="tg{{q.id}}">   
             {% for i,t in enumerate(q.tags_ids) %}
             <mark class='tags'> {{ tags[t] }} </mark>
-            <button class='del' onclick="return deltag({{q.q_id}},{{i}})"> X </button>
+            <button class='del' onclick="return deltag('{{q.id}}',{{i}})"> X </button>
             {% endfor %}
             </div>    
-            <input type="text" id="tt{{q.q_id}}" class="searchtags">   
-        <button class='addtag' id="at{{q.q_id}}"> + </button>
-        <button class='addtag' id="mt{{q.q_id}}"> Modifier </button>
+            <input type="text" id="tt{{q.id}}" class="searchtags">   
+        <button class='addtag' id="at{{q.id}}"> + </button>
+        <button class='addtag' id="mt{{q.id}}"> Modifier </button>
         </div>
 
     <form> 
             <h3> Texte de la question pour le patient : </h3>
-            <label id="lb{{q.q_id}}">{{q.question_text}} </label>
-            <input type="text" id="qt{{q.q_id}}"> </input>
-            <button class ='modify' id="m{{q.q_id}}"> Modifier</button>
-            <button class ='modify' id="s{{q.q_id}}"> Sauver</button>
+            <label id="lb{{q.id}}">{{q.question_text}} </label>
+            <input type="text" id="qt{{q.id}}"> </input>
+            <button class ='modify' id="m{{q.id}}"> Modifier</button>
+            <button class ='modify' id="s{{q.id}}"> Sauver</button>
         </form>
 
      <form>
          <h3> Frequence de la Question ] 0 ; 1 ] 1-> tres frequent 0.01 -> tres rare : </h3>
-            <input type="text" id="pri{{q.q_id}}" value="{{q.priority}}"> </input>
-            <button class ='modify' id="spri{{q.q_id}}"> Sauver</button>
+            <input type="text" id="pri{{q.id}}" value="{{q.priority}}"> </input>
+            <button class ='modify' id="spri{{q.id}}"> Sauver</button>
      </form>
  
      <form>
          <h3> Reponses et mots-cles associes: </h3>
             {%for i,ans in enumerate(q.answer_choices) %}
             <h4> {{ i+1 }} {{ ans }}  </h4>
-            <input type= "text" value="{{ans}}" id="ans{{q.q_id}}{{i}}"> </input>
-            <button class='del'  onclick="return delete_answer({{q.q_id}},{{i}})" > X </button>
-            <button class='modify' onclick="return modify_answer({{q.q_id}},{{i}})" > modifier </button>
+            <input type= "text" value="{{ans}}" id="ans{{q.id}}{{i}}"> </input>
+            <button class='del'  onclick="return delete_answer('{{q.id}}',{{i}})" > X </button>
+            <button class='modify' onclick="return modify_answer('{{q.id}}',{{i}})" > modifier </button>
             <div>
                 <label> implique => </label>
                 {%for j, (pos, tag_id) in enumerate(q.logic[ans]) %}
@@ -48,33 +48,33 @@
                     <mark class='anti_tags'> {{ tags[tag_id] }} </mark>
                     {% endif %}
 
-                    <button class='del' onclick="return delete_tag_inference_in_answer({{q.q_id}},{{i}},{{j}})" > X </button>
+                    <button class='del' onclick="return delete_tag_inference_in_answer('{{q.id}}',{{i}},{{j}})" > X </button>
                 {% endfor %}
-                <input type= "text" class="searchtags" id="ans_tag{{q.q_id}}{{i}}"> </input>
-                <button class='addtag' onclick="return add_tag_inference_in_answer({{q.q_id}},{{i}})" > + </button>
+                <input type= "text" class="searchtags" id="ans_tag{{q.id}}{{i}}"> </input>
+                <button class='addtag' onclick="return add_tag_inference_in_answer('{{q.id}}',{{i}})" > + </button>
                 </div>   
                 {% endfor %}
             <h4> Ajouter une reponse : </h4>
-            <input type= "text"  value="{{ans}}" id="new_ans{{q.q_id}}"> </input>
-            <button class='addtag' onclick="return add_answer({{q.q_id}})" > + </button>
+            <input type= "text"  value="{{ans}}" id="new_ans{{q.id}}"> </input>
+            <button class='addtag' onclick="return add_answer('{{q.id}}')" > + </button>
      </form>
   
 
  <script> 
-        $("#ts{{q.q_id}}").hide(); // hide the form 
-        $("#tt{{q.q_id}}").hide(); // hide the form 
-        $("#qt{{q.q_id}}").hide(); // hide the form 
-        $("#ms" + {{q.q_id}}).click((function(){return modifier_symptome({{q.q_id}})})); 
-        $("#ss" + {{q.q_id}}).click((function(){return sauver_symptome({{q.q_id}})})); 
-        $("#dq" + {{q.q_id}}).click((function(){return delete_question({{q.q_id}})})); 
-        $("#m" + {{q.q_id}}).click((function(){return modifier({{q.q_id}})})); 
-        $("#s" + {{q.q_id}}).click((function(){return sauver({{q.q_id}})})); 
-        $("#spri" + {{q.q_id}}).click((function(){return sauver_priority({{q.q_id}})})); 
-        $("#at" + {{q.q_id}}).click((function(){return add_mode({{q.q_id}})}));
-        $("#mt" + {{q.q_id}}).click((function(){return normal_mode({{q.q_id}})}));
-        $("#mt" + {{q.q_id}}).hide()
-        $("#s" + {{q.q_id}}).hide()
-        $("#ss" + {{q.q_id}}).hide()
+        $("#ts{{q.id}}").hide(); // hide the form 
+        $("#tt{{q.id}}").hide(); // hide the form 
+        $("#qt{{q.id}}").hide(); // hide the form 
+        $("#ms{{q.id}}").click((function(){return modifier_symptome('{{q.id}}')})); 
+        $("#ss{{q.id}}").click((function(){return sauver_symptome('{{q.id}}')})); 
+        $("#dq{{q.id}}").click((function(){return delete_question('{{q.id}}')})); 
+        $("#m{{q.id}}").click((function(){return modifier('{{q.id}}')})); 
+        $("#s{{q.id}}").click((function(){return sauver('{{q.id}}')})); 
+        $("#spri{{q.id}}").click((function(){return sauver_priority('{{q.id}}')})); 
+        $("#at{{q.id}}").click((function(){return add_mode('{{q.id}}')}));
+        $("#mt{{q.id}}").click((function(){return normal_mode('{{q.id}}')}));
+        $("#mt{{q.id}}").hide()
+        $("#s{{q.id}}").hide()
+        $("#ss{{q.id}}").hide()
 
         $(function() {
             $( ".searchtags" ).autocomplete({

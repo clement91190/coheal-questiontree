@@ -44,7 +44,7 @@ function sauver(id){
 
 function sauver_priority(id){
     var data = {
-        q_id:  id,
+        id:  id,
         priority: $("#pri" + id).val()};
     $.post("update_priority_question", data, 
         (function(data, status){}))
@@ -54,7 +54,7 @@ var machin = 0;
     
 function postdeleteq(id){
     var data = {
-        q_id:  id}
+        id:  id}
         $.post("delquestion", data, 
         (function(data, status){
         $("#q" + id).remove();
@@ -63,90 +63,95 @@ function postdeleteq(id){
 
 function postsymptome(id){
     var data = {
-        q_id:  id,
+        id:  id,
         symptometext: $("#ts" + id).val()};
-        $.post("findandmodifysymp", data, 
-        (function(data, status){
-            $("#lbs" + id).text(
-            $.parseJSON(data).symptome)
-            })
-        );}
+    $.post("findandmodifysymp", data, (function(data, status){
+            change_question_div_with_html(id, data)}) );
+    }
 
 
 function postqtext(id){
     var data = {
-        q_id:  id,
+        id:  id,
         qtext: $("#qt" + id).val()};
-    $.post("findandmodify", data, 
-        (function(data, status){
-            $("#lb" + id).text(
-            $.parseJSON(data).question_text)
-            })
-        );}
+    $.post("findandmodify", data, (function(data, status){
+        change_question_div_with_html(id, data)}) );
+    }
 
 function addtag(id){
     var data = {
-        q_id:  id,
+        id:  id,
         tag_text: $("#tt" + id).val()};
     $.post("addtag", data,(function(data, status){
-        update_question(data, status, id)}) );
+        change_question_div_with_html(id, data)}) );
     }
 
-function deltag(q_id, tag_id){
+function deltag(id, tag_id){
     var data = {
-        q_id: q_id,
+        id: id,
         tag_id : tag_id}
     $.post("deltag", data,(function(data, status){
-        update_question(data, status, q_id)}) );
+        change_question_div_with_html(id, data)}) );
     }
 
-function delete_answer(q_id, ans_id){
+function delete_answer(id, ans_id){
     var data = {
-        q_id: q_id,
+        id: id,
         ans_id : ans_id};
     $.post("delete_answer_from_question", data,(function(data, status){
-        change_question_div_with_html(q_id, data)}) );
+        change_question_div_with_html(id, data)}) );
     return false;
     }
 
-function modify_answer(q_id, ans_id){
+function modify_answer(id, ans_id){
     var data = {
-        q_id: q_id,
+        id: id,
         ans_id : ans_id,
-        ans_text: $("#ans" + q_id + ans_id).val() }
+        ans_text: $("#ans" + id + ans_id).val() }
     $.post("modify_answer_from_question", data,(function(data, status){
-        change_question_div_with_html(q_id, data)}) );
+        change_question_div_with_html(id, data)}) );
     return false;
     }
 
-function delete_tag_inference_in_answer(q_id, ans_id, tag_num){
+function delete_tag_inference_in_answer(id, ans_id, tag_num){
     var data = {
-        q_id: q_id,
+        id: id,
         ans_id : ans_id,
         tag_num : tag_num}
     $.post("delete_tag_inference_in_answer", data,(function(data, status){
-        change_question_div_with_html(q_id, data)}) );
+        change_question_div_with_html(id, data)}) );
     return false;
     }
 
-function add_tag_inference_in_answer(q_id, ans_id){
+function add_tag_inference_in_answer(id, ans_id){
     var data = {
-        q_id: q_id,
+        id: id,
         ans_id : ans_id,
-        ans_tag_text : $("#ans_tag"+ q_id + ans_id).val()}
+        ans_tag_text : $("#ans_tag"+ id + ans_id).val()}
     $.post("add_tag_inference_in_answer", data,(function(data, status){
-        change_question_div_with_html(q_id, data)}) );
+        change_question_div_with_html(id, data)}) );
     return false;
     }
 
-function add_answer(q_id){
+function add_answer(id){
     var data = {
-        q_id: q_id,
-        ans_text : $("#new_ans"+ q_id).val()}
+        id: id,
+        ans_text : $("#new_ans" + id).val()}
     $.post("add_answer", data,(function(data, status){
-        change_question_div_with_html(q_id, data)}) );
+        change_question_div_with_html(id, data)}) );
     return false;
     }
+
+    
+function add_question(id){
+    var data = {}
+    $.post("add_question", data,(function(data, status){
+        id = $.parseJSON(data)._id.$oid ;
+        window.location.replace('/modifyone?id=' + id);
+        }));
+    return false;
+    }
+
 
 
 

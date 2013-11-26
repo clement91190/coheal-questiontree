@@ -46,14 +46,12 @@ def modifyone():
     """ access to one of the questions """
     try:
         id = request.args.get('id')
-        id = int(id)
         tags = models.Tag.objects()
         tags_dict = {t.id: t.text for t in tags}
-        question = models.Question.objects(q_id=id)
-        print len(question)
+        question = models.Question.objects.get(id=id)
         return render_template(
             'modify.html',
-            questions=question,
+            questions=[question],
             enumerate=enumerate,
             tags=tags_dict)
     except:
@@ -97,12 +95,12 @@ def delete_tag_from_db():
 def findandmodify():
     """ modify the question """
     try: 
-        q_id = request.form['q_id']
+        id = request.form['id']
         qtext = request.form['qtext']
-        question = models.Question.objects(q_id=q_id).first()
+        question = models.Question.objects.get(id=id)
         question.question_text = qtext
         question.save()
-        return question.to_json()
+        return template_modify_all_tags(question)
     except:
         print traceback.print_exc()
         return False
@@ -111,12 +109,12 @@ def findandmodify():
 @app.route('/findandmodifysymp', methods=['POST'])
 def findandmodifysymp():
     try: 
-        q_id = request.form['q_id']
+        id = request.form['id']
         text = request.form['symptometext']
-        question = models.Question.objects(q_id=q_id).first()
+        question = models.Question.objects.get(id=id)
         question.symptome = text
         question.save()
-        return question.to_json()
+        return template_modify_all_tags(question)
     except:
         print traceback.print_exc()
         return False
@@ -125,16 +123,13 @@ def findandmodifysymp():
 @app.route('/addtag', methods=['POST'])
 def addtag():
     try:
-        q_id = request.form['q_id']
+        id = request.form['id']
         tag_text = request.form['tag_text']
         tag = models.Tag.get_create(tag_text)
-        question = models.Question.objects(q_id=q_id).first()
+        question = models.Question.objects.get(id=id)
         question.tags_ids.append(tag.id)
         question.save()
-        tags = models.Tag.objects(id__in=question.tags_ids)
-        tags_list = [t.text for t in tags]
-        response = {"question": json.loads(question.to_json()), "tags": tags_list}
-        return json.dumps(response)
+        return template_modify_all_tags(question)
     except:
         print "##fail##"
         print traceback.print_exc()
@@ -144,17 +139,13 @@ def addtag():
 @app.route('/deltag', methods=['POST'])
 def del_tag():
     try:
-        q_id = request.form['q_id']
+        id = request.form['id']
         tag_id = request.form['tag_id']
         tag_id = int(tag_id)
-        q_id = int(q_id)
-        question = models.Question.objects(q_id=q_id).first()
+        question = models.Question.objects.get(id=id)
         del(question.tags_ids[tag_id])
         question.save()
-        tags = models.Tag.objects(id__in=question.tags_ids)
-        tags_list = [t.text for t in tags]
-        response = {"question": json.loads(question.to_json()), "tags": tags_list}
-        return json.dumps(response)
+        return template_modify_all_tags(question)
     except:
         print "##fail##"
         print traceback.print_exc()
@@ -164,18 +155,17 @@ def del_tag():
 @app.route('/delete_answer_from_question', methods=['POST'])
 def delete_answer_from_question():
     try:
-        q_id = request.form['q_id']
+        id = request.form['id']
         ans_id = request.form['ans_id']
         ans_id = int(ans_id)
-        q_id = int(q_id)
-        question = models.Question.objects(q_id=q_id).first()
+        question = models.Question.objects.get(id=id)
         try:
             del(question.logic[question.answer_choices[ans_id]])
         except:
             pass
         del(question.answer_choices[ans_id])
         question.save()
-        return json.dumps({"success": True})
+        return template_modify_all_tags(question)
     except:
         print "##fail##"
         print traceback.print_exc()
@@ -185,13 +175,12 @@ def delete_answer_from_question():
 @app.route('/delete_tag_inference_in_answer', methods=['POST'])
 def delete_tag_inference_in_answer():
     try:
-        q_id = request.form['q_id']
+        id = request.form['id']
         ans_id = request.form['ans_id']
         tag_num = request.form['tag_num']
         ans_id = int(ans_id)
-        q_id = int(q_id)
         tag_num = int(tag_num)
-        question = models.Question.objects(q_id=q_id).first()
+        question = models.Question.objects.get(id=id)
         del(question.logic[question.answer_choices[ans_id]][tag_num])
         question.save()
         return template_modify_all_tags(question)
@@ -204,13 +193,12 @@ def delete_tag_inference_in_answer():
 @app.route('/modify_answer_from_question', methods=['POST'])
 def modify_answer_from_question():
     try:
-        q_id = request.form['q_id']
+        id = request.form['id']
         ans_id = request.form['ans_id']
         ans_text = request.form['ans_text']
         ans_id = int(ans_id)
-        q_id = int(q_id)
         #TODO move this as a function in models.
-        question = models.Question.objects(q_id=q_id).first()
+        question = models.Question.objects.get(id=id)
         question.logic[ans_text] = question.logic[question.answer_choices[ans_id]]
         del(question.logic[question.answer_choices[ans_id]])
         question.answer_choices[ans_id] = ans_text
@@ -225,7 +213,7 @@ def modify_answer_from_question():
 @app.route('/add_tag_inference_in_answer', methods=['POST'])
 def add_tag_inference_in_answer():
     try:
-        q_id = request.form['q_id']
+        id = request.form['id']
         ans_id = request.form['ans_id']
         ans_tag_text = request.form['ans_tag_text']
         positive = True
@@ -235,8 +223,7 @@ def add_tag_inference_in_answer():
             positive = False
         tag_id = models.Tag.get_create(ans_tag_text).id
         ans_id = int(ans_id)
-        q_id = int(q_id)
-        question = models.Question.objects(q_id=q_id).first()
+        question = models.Question.objects.get(id=id)
         try:
             question.logic[question.answer_choices[ans_id]].append((positive, tag_id))
         except:
@@ -253,10 +240,9 @@ def add_tag_inference_in_answer():
 @app.route('/add_answer', methods=['POST'])
 def add_answer():
     try:
-        q_id = request.form['q_id']
+        id = request.form['id']
         ans_text = request.form['ans_text']
-        q_id = int(q_id)
-        question = models.Question.objects(q_id=q_id).first()
+        question = models.Question.objects.get(id=id)
         question.answer_choices.append(ans_text)
         question.logic[ans_text] = []
         question.save()
@@ -272,8 +258,8 @@ def add_answer():
 def delquestion():
     """ delete a question with the id given """
     try:
-        q_id = request.form['q_id']
-        models.Question.objects(q_id=q_id).first().delete()
+        id = request.form['id']
+        models.Question.objects.get(id=id).delete()
         return ""
     except:
         print traceback.print_exc()
@@ -283,13 +269,32 @@ def delquestion():
 def update_priority_question():
     """ delete a question with the id given """
     try:
-        q_id = request.form['q_id']
+        id = request.form['id']
         priority = request.form['priority']
         priority = float(priority)
-        q = models.Question.objects(q_id=q_id).first()
-        q.priority = priority
-        q.save()
-        return template_modify_all_tags(q)
+        question = models.Question.objects.get(id=id)
+        question.priority = priority
+        question.save()
+        return template_modify_all_tags(question)
+    except:
+        print traceback.print_exc()
+
+
+@app.route('/add_question', methods=['POST'])
+def add_question():
+    """ delete a question with the id given """
+    try:
+        question = models.Question()
+        question.priority = 0
+        question.symptome = "Symptome (optionnel)" 
+        question.question_text = " Texte de la question a modifier"
+        question.tags_ids = []
+        question.answer_choices = []
+        question.logic = {}
+        question.save()
+
+        print question.id
+        return question.to_json()
     except:
         print traceback.print_exc()
 
@@ -338,4 +343,6 @@ def template_modify_all_tags(question):
 def template_modify(question, tags):
     return render_template(
         "modify_one_template.html", q=question,
-        tags=tags, enumerate=enumerate)
+
+        tags=tags, enumerate=enumerate,
+        )
