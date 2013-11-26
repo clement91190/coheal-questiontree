@@ -7,6 +7,9 @@
 
 {% block body %}
     {{ super() }}
+    <div class="add_question">
+        <form> <button class="modify" onclick="return add_question()"> Nouvelle Question </button> </form>
+    </div>
     <div class = "all_questions">
     {% macro modify_question(q, enumerate, tags) %}
     <div class='question' id="q{{q.id}}">
@@ -16,10 +19,6 @@
     {% for q in questions %}
         {{ modify_question(q, enumerate, tags)}}
     {% endfor %}
-    </div>
-
-    <div class="add_question">
-        <form> <button class="modify" onclick="return add_question()"> Nouvelle Question </button> </form>
     </div>
 
 {% endblock %}
