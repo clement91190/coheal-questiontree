@@ -31,7 +31,7 @@ def tags():
 @app.route('/modify')
 def modify():
     """ principal page to be able to modify the questions"""
-    questions = models.Question.objects(q_type=models.Question.TYPE_SYMPTOME).order_by('q_id')
+    questions = models.Question.objects().order_by('-id')
     tags = models.Tag.objects()
     tags_dict = {t.id: t.text for t in tags}
     return render_template(
