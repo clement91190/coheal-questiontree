@@ -6,6 +6,10 @@ import traceback
 import json
 
 
+@app.route('/')
+def main():
+    return render_template('global_layout.html')
+
 @app.route('/autocomplete_tags')
 #TODO add to the tag page and delete
 def autocomplete_tags():
