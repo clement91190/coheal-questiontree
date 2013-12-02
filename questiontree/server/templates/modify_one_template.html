@@ -1,5 +1,10 @@
-        <form>
-            <h2> Symptome : <label id="lbs{{q.id}}">{{q.symptome}} </label>  <a href= https://docs.google.com/document/d/1uj6_exWl9HDLTM74iqK9frgQIfrCpbAdFSHFexeJJlw/edit#> AIDE ? </a></h2>
+<form>
+    <h2> {{q.question_text}} </h2>
+    <button class='expand' onclick="return expand_question('{{q.id}}')" > + </button>
+    <button class='expand' onclick="return contract_question('{{q.id}}')"> - </button>
+
+    <div id = "main{{q.id}}" class="question_form">
+            <h3> Symptome : <label id="lbs{{q.id}}">{{q.symptome}} </label>  <a href= https://docs.google.com/document/d/1uj6_exWl9HDLTM74iqK9frgQIfrCpbAdFSHFexeJJlw/edit#> AIDE ? </a></h3>
             <input type="text" id="ts{{q.id}}">   
             <button class ='modify' id="ms{{q.id}}"> Modifier</button>
             <button class ='modify' id="ss{{q.id}}"> Sauver</button>
@@ -57,7 +62,8 @@
             <h4> Ajouter une reponse : </h4>
             <input type= "text"  value="{{ans}}" id="new_ans{{q.id}}"> </input>
             <button class='addtag' onclick="return add_answer('{{q.id}}')" > + </button>
-     </form>
+        </div>
+        </form>
   
 
  <script> 

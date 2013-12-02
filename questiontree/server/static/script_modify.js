@@ -181,4 +181,13 @@ function change_question_div_with_html(question_id, html)
     $("#q" + question_id).html(html)
 }
 
+function contract_question(id){
+        $("#main" + id).hide()
+        return false;
+    }
+function expand_question(id){
+        $("#main" + id).show()
+        return false;
+    }
+
 
