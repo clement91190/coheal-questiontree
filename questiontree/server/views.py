@@ -4,6 +4,7 @@ from questiontree.server import app
 from questiontree.db import models
 import traceback
 import json
+import random
 
 
 @app.route('/autocomplete_tags')
@@ -76,10 +77,16 @@ def questiongeneriques():
         return "not good"
 
 
-@app.route('/simu')
+@app.route('/simulate')
 def simulate():
     """ Page to simulate the questions """
-    return render_template('simulate.html')
+    question = next_question()
+    tags = []
+    return render_template(
+        'simulate.html',
+        q=question,
+        enumerate=enumerate,
+        tags=tags)
 
 
 @app.route('/delete_tag_from_db', methods=['POST'])
@@ -237,6 +244,22 @@ def add_tag_inference_in_answer():
         return False
 
 
+@app.route('/answer_simulation', methods=['POST'])
+def answer_simulation():
+    try:
+        id = request.form['id']
+        answer_choice = request.form['answer_choice']
+       
+        question = next_question()
+        #TODO add something her to do useful stuff with answer
+        #return json.dumps({"success": True})
+        return template_simulate_question(question)
+    except:
+        print "##fail##"
+        print traceback.print_exc()
+        return False
+
+
 @app.route('/validate_question', methods=['POST'])
 def validate_question():
     try:
@@ -373,8 +396,17 @@ def template_modify_all_tags(question):
 def template_modify(question, tags):
     return render_template(
         "modify_one_template.html", q=question,
+        tags=tags, enumerate=enumerate)
 
-        tags=tags, enumerate=enumerate,
-        )
+
+def template_simulate_question(question):
+    return render_template(
+        "question_simulate_template.html", q=question,
+        tags=tags, enumerate=enumerate)
+
+
+def next_question():
+    """ temporary function to get a random question """ 
+    return random.choice(models.Question.objects(valid=True))
 
 

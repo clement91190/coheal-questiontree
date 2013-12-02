@@ -1,0 +1,7 @@
+<h2> {{q.question_text}} </h2>
+
+<div class="answers">
+    {% for i, a in enumerate(q.answer_choices) %}
+    <button onclick="return answer('{{q.id}}', {{i}})"> {{a}} </button>
+    {% endfor %}
+</div>
