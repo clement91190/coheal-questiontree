@@ -7,7 +7,8 @@
 
 {% block body %}
     {{ super() }}
-
+    
+    <button id="start_again_button" onclick="window.location.reload()"> Commencer une Nouvelle simulation </button>
     <div id= "question_simu">
     {% macro display_question(q, enumerate, tags) %}
         {% include "question_simulate_template.html" %}
