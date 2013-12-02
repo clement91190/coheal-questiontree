@@ -26,6 +26,7 @@ class Question(Document):
     answer_choices = ListField()
     logic = DictField()  # Dictionary to link an answer_choice to a list of a tupele (bool, ObjectId of Tag)
     priority = FloatField()
+    valid = BooleanField()  # if True -> used in simulation
 
     TYPE_SYMPTOME = 2
     TYPE_GENERIQUE = 1

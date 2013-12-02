@@ -190,4 +190,22 @@ function expand_question(id){
         return false;
     }
 
+function validate_question(id){
+    var data = {
+        id: id}
+    $.post("validate_question", data,(function(data, status){
+        change_question_div_with_html(id, data)}) );
+    return false;
+    }
+
+
+
+function unvalidate_question(id)
+{    var data = {
+        id: id}
+    $.post("unvalidate_question", data,(function(data, status){
+        change_question_div_with_html(id, data)}) );
+    return false;
+    }
+
 

@@ -1,11 +1,21 @@
 <form>
-    <h2> {{q.question_text}} </h2>
+    <h2> {{q.question_text}} </h2> 
+
     <button class='expand' onclick="return expand_question('{{q.id}}')" > + </button>
     <button class='expand' onclick="return contract_question('{{q.id}}')"> - </button>
+    {% if q.valid %}
+    <img id = "image_ok{{q.id}}" src="{{ url_for('static', filename='bullet_valid.ico') }}">
+    {% else %}
+    <img id = "image_not_ok{{q.id}}" src="{{ url_for('static', filename='Delete.ico') }}">
 
+    {% endif %}
+    <a href= https://docs.google.com/document/d/1uj6_exWl9HDLTM74iqK9frgQIfrCpbAdFSHFexeJJlw/edit#> AIDE ? </a>
     <div id = "main{{q.id}}" class="question_form">
-            <h3> Symptome : <label id="lbs{{q.id}}">{{q.symptome}} </label>  <a href= https://docs.google.com/document/d/1uj6_exWl9HDLTM74iqK9frgQIfrCpbAdFSHFexeJJlw/edit#> AIDE ? </a></h3>
-            <input type="text" id="ts{{q.id}}">   
+
+        <button onclick="return validate_question('{{q.id}}')"> Valider </button> 
+       <button onclick="return unvalidate_question('{{q.id}}')"> In - Valider </button> 
+       <h3> Symptome : <label id="lbs{{q.id}}">{{q.symptome}} </label>  </h3>
+       <input type="text" id="ts{{q.id}}">   
             <button class ='modify' id="ms{{q.id}}"> Modifier</button>
             <button class ='modify' id="ss{{q.id}}"> Sauver</button>
             <button class ='delquest' id="dq{{q.id}}"> Supprimer</button>
@@ -26,7 +36,7 @@
     <form> 
             <h3> Texte de la question pour le patient : </h3>
             <label id="lb{{q.id}}">{{q.question_text}} </label>
-            <input type="text" id="qt{{q.id}}"> </input>
+            <input type="text" id="qt{{q.id}}" value = "{{q.question_text}}"> </input>
             <button class ='modify' id="m{{q.id}}"> Modifier</button>
             <button class ='modify' id="s{{q.id}}"> Sauver</button>
         </form>

@@ -31,7 +31,7 @@ def tags():
 @app.route('/modify')
 def modify():
     """ principal page to be able to modify the questions"""
-    questions = models.Question.objects().order_by('-id')
+    questions = models.Question.objects().order_by('valid', '-id')
     tags = models.Tag.objects()
     tags_dict = {t.id: t.text for t in tags}
     return render_template(
@@ -237,6 +237,36 @@ def add_tag_inference_in_answer():
         return False
 
 
+@app.route('/validate_question', methods=['POST'])
+def validate_question():
+    try:
+        id = request.form['id']
+        question = models.Question.objects.get(id=id)
+        question.valid = True
+        question.save()
+        #return json.dumps({"success": True})
+        return template_modify_all_tags(question)
+    except:
+        print "##fail##"
+        print traceback.print_exc()
+        return False
+
+
+@app.route('/unvalidate_question', methods=['POST'])
+def unvalidate_question():
+    try:
+        id = request.form['id']
+        question = models.Question.objects.get(id=id)
+        question.valid = False
+        question.save()
+        #return json.dumps({"success": True})
+        return template_modify_all_tags(question)
+    except:
+        print "##fail##"
+        print traceback.print_exc()
+        return False
+
+
 @app.route('/add_answer', methods=['POST'])
 def add_answer():
     try:
@@ -346,3 +376,5 @@ def template_modify(question, tags):
 
         tags=tags, enumerate=enumerate,
         )
+
+
