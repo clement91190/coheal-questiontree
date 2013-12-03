@@ -1,7 +1,7 @@
 # -*-coding:Utf-8 -*
 from mongoengine import Document, StringField, IntField, ListField,\
     register_connection, BooleanField, DictField, FloatField, ObjectIdField
-
+import time
 
 QUESTION_URI = 'mongodb://clement91190:rafiki@lafleur.mongohq.com:10078/app18535327'
 QUESTION_ALIAS = 'question-tree-production'
@@ -71,6 +71,25 @@ class Tag(Document):
         if created:
             res.save()
         return res
+
+
+class AnswerSession(Document):
+    """ store all the question and answer off a User """
+    user_id = ObjectIdField()
+    answers = ListField()  # list of tuple (Question Id, answer, timestamp)
+    tags = ListField()  # List of ( bool,  Id of the tag) implied by the answers (or Patient Profile)
+
+    def get_answered_questions(self):
+        """ return the list of ids of questions already answered"""
+        return [a[0] for a in self.answers] 
+
+    def add_answer(self, question_id, answer_num):
+        q = Question.objects(id=question_id)
+        tags_to_add = q.logic[answer_num]
+        self.tags = list(set(self.tags).union(tags_to_add))
+        self.answers.append((question_id, answer_num, int(time.time())))
+        self.save()
+
 
 class Graph(Document):
     """ Graph is a collection of Question with a Node/edges structure """
