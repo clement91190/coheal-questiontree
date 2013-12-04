@@ -24,7 +24,7 @@ class Question(Document):
     symptome = StringField()
     question_text = StringField()
     answer_choices = ListField()
-    logic = DictField()  # Dictionary to link an answer_choice to a list of a tupele (bool, ObjectId of Tag)
+    logic = DictField()  # Dictionary to link an answer_choice to a list of a tuple (bool, ObjectId of Tag)
     priority = FloatField()
     valid = BooleanField()  # if True -> used in simulation
 
@@ -75,6 +75,9 @@ class Tag(Document):
 
 class AnswerSession(Document):
     """ store all the question and answer off a User """
+    meta = {
+        'db_alias': 'question-tree-production',
+        'collection': 'answer_session'}
     user_id = ObjectIdField()
     answers = ListField()  # list of tuple (Question Id, answer, timestamp)
     tags = ListField()  # List of ( bool,  Id of the tag) implied by the answers (or Patient Profile)
@@ -84,11 +87,17 @@ class AnswerSession(Document):
         return [a[0] for a in self.answers] 
 
     def add_answer(self, question_id, answer_num):
-        q = Question.objects(id=question_id)
-        tags_to_add = q.logic[answer_num]
-        self.tags = list(set(self.tags).union(tags_to_add))
+        q = Question.objects.get(id=question_id)
+        tags_to_add = q.logic[q.answer_choices[answer_num]]
+        tags = set([tuple(t) for t in self.tags])
+        tags_to_add = set([tuple(t) for t in q.logic[q.answer_choices[answer_num]]])
+        for t in set(tags_to_add).difference(tags):
+            self.tags.append(t)
         self.answers.append((question_id, answer_num, int(time.time())))
         self.save()
+    
+    def get_tags_anti_tags(self):
+        return [(b, Tag.objects.get(id=id).text) for b, id in self.tags]
 
 
 class Graph(Document):

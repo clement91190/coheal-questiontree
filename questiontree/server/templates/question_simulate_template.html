@@ -5,3 +5,17 @@
     <button onclick="return answer('{{q.id}}', {{i}})"> {{a}} </button>
     {% endfor %}
 </div>
+
+<div class= "history">
+    {% for b, t in tags %}
+        {% if b %}
+            <mark class='tags'> {{ t }} </mark>
+        {% else %}
+            <mark class='anti_tags'> {{ t }} </mark>
+        {% endif %}
+    
+    {% endfor %}
+</div>
+
+
+

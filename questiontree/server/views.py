@@ -1,5 +1,5 @@
 # -*-coding:Utf-8 -*
-from flask import render_template, request
+from flask import render_template, request, session
 from questiontree.server import app 
 from questiontree.db import models
 import traceback
@@ -82,6 +82,9 @@ def simulate():
     """ Page to simulate the questions """
     question = next_question()
     tags = []
+    answer_session = models.AnswerSession()
+    answer_session.save()
+    session['answers_id'] = str(answer_session.id)
     return render_template(
         'simulate.html',
         q=question,
@@ -247,13 +250,17 @@ def add_tag_inference_in_answer():
 @app.route('/answer_simulation', methods=['POST'])
 def answer_simulation():
     try:
-        id = request.form['id']
+        question_id = request.form['id']
         answer_choice = request.form['answer_choice']
-       
+        answer_choice = int(answer_choice)
+        answer_session = models.AnswerSession.objects.get(id=session['answers_id'])
+        answer_session.add_answer(question_id, answer_choice)
         question = next_question()
         #TODO add something her to do useful stuff with answer
         #return json.dumps({"success": True})
-        return template_simulate_question(question)
+        return template_simulate_question(
+            question,
+            answer_session.get_tags_anti_tags())
     except:
         print "##fail##"
         print traceback.print_exc()
@@ -399,7 +406,7 @@ def template_modify(question, tags):
         tags=tags, enumerate=enumerate)
 
 
-def template_simulate_question(question):
+def template_simulate_question(question, tags):
     return render_template(
         "question_simulate_template.html", q=question,
         tags=tags, enumerate=enumerate)
