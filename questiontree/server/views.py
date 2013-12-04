@@ -1,9 +1,10 @@
 # -*-coding:Utf-8 -*
-from flask import render_template, request
+from flask import render_template, request, session
 from questiontree.server import app 
 from questiontree.db import models
 import traceback
 import json
+import random
 
 
 @app.route('/')
@@ -80,10 +81,19 @@ def questiongeneriques():
         return "not good"
 
 
-@app.route('/simu')
+@app.route('/simulate')
 def simulate():
     """ Page to simulate the questions """
-    return render_template('simulate.html')
+    tags = []
+    answer_session = models.AnswerSession()
+    answer_session.save()
+    question = models.Question.get_best_question(answer_session)
+    session['answers_id'] = str(answer_session.id)
+    return render_template(
+        'simulate.html',
+        q=question,
+        enumerate=enumerate,
+        tags=tags)
 
 
 @app.route('/delete_tag_from_db', methods=['POST'])
@@ -241,6 +251,29 @@ def add_tag_inference_in_answer():
         return False
 
 
+@app.route('/answer_simulation', methods=['POST'])
+def answer_simulation():
+    try:
+        question_id = request.form['id']
+        answer_choice = request.form['answer_choice']
+        answer_choice = int(answer_choice)
+        answer_session = models.AnswerSession.objects.get(id=session['answers_id'])
+        answer_session.add_answer(question_id, answer_choice)
+        question = models.Question.get_best_question(answer_session)
+        #TODO add something her to do useful stuff with answer
+        #return json.dumps({"success": True})
+        if question is not None:
+            return template_simulate_question(
+                question,
+                answer_session.get_tags_anti_tags())
+        else:
+            return " <h2>  Merci d'avoir teste le questionnaire ! </h2>"
+    except:
+        print "##fail##"
+        print traceback.print_exc()
+        return False
+
+
 @app.route('/validate_question', methods=['POST'])
 def validate_question():
     try:
@@ -377,8 +410,17 @@ def template_modify_all_tags(question):
 def template_modify(question, tags):
     return render_template(
         "modify_one_template.html", q=question,
+        tags=tags, enumerate=enumerate)
 
-        tags=tags, enumerate=enumerate,
-        )
+
+def template_simulate_question(question, tags):
+    return render_template(
+        "question_simulate_template.html", q=question,
+        tags=tags, enumerate=enumerate)
+
+
+def next_question():
+    """ temporary function to get a random question """ 
+    return random.choice(models.Question.objects(valid=True))
 
 

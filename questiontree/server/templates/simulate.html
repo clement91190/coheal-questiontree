@@ -1,0 +1,20 @@
+{% extends "global_layout.html" %}
+
+{% block head %}
+    {{ super() }}
+   <script type="text/javascript" src="{{ url_for('static', filename='script_simulate.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+    {{ super() }}
+    
+    <button id="start_again_button" onclick="window.location.reload()"> Commencer une Nouvelle simulation </button>
+    <div id= "question_simu">
+    {% macro display_question(q, enumerate, tags) %}
+        {% include "question_simulate_template.html" %}
+    {% endmacro %}
+
+    {{ display_question(q, enumerate, tags)}}
+    </div>
+
+{% endblock %}
