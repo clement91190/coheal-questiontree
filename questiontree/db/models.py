@@ -36,6 +36,24 @@ class Question(Document):
         """ return a list of all symptome in the questions"""
         return [q.symptome for q in Question.objects(q_type=2)]
 
+    @staticmethod
+    def get_best_question(answer_session):
+        print map(lambda x: x.fitness(answer_session), Question.objects(valid=True))
+        q = min(Question.objects(valid=True), key=lambda x: x.fitness(answer_session))
+        if q.fitness(answer_session) == 100:
+            return None
+        else:
+            return q
+
+    def fitness(self, answer_session):
+        """ function describing how good is the question knowing the items in
+        inference_list"""
+        ids_of_question_already_answered = [a[0] for a in answer_session.answers]
+        print ids_of_question_already_answered
+        if str(self.id) in ids_of_question_already_answered:
+            return 100
+        return 1 - self.priority
+
 
 class Tag(Document):
     """

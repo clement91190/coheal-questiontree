@@ -80,10 +80,10 @@ def questiongeneriques():
 @app.route('/simulate')
 def simulate():
     """ Page to simulate the questions """
-    question = next_question()
     tags = []
     answer_session = models.AnswerSession()
     answer_session.save()
+    question = models.Question.get_best_question(answer_session)
     session['answers_id'] = str(answer_session.id)
     return render_template(
         'simulate.html',
@@ -255,12 +255,15 @@ def answer_simulation():
         answer_choice = int(answer_choice)
         answer_session = models.AnswerSession.objects.get(id=session['answers_id'])
         answer_session.add_answer(question_id, answer_choice)
-        question = next_question()
+        question = models.Question.get_best_question(answer_session)
         #TODO add something her to do useful stuff with answer
         #return json.dumps({"success": True})
-        return template_simulate_question(
-            question,
-            answer_session.get_tags_anti_tags())
+        if question is not None:
+            return template_simulate_question(
+                question,
+                answer_session.get_tags_anti_tags())
+        else:
+            return " <h2>  Merci d'avoir teste le questionnaire ! </h2>"
     except:
         print "##fail##"
         print traceback.print_exc()
