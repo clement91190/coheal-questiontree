@@ -38,7 +38,7 @@ class Question(Document):
 
     @staticmethod
     def get_best_question(answer_session):
-        print map(lambda x: x.fitness(answer_session), Question.objects(valid=True))
+        #print map(lambda x: x.fitness(answer_session), Question.objects(valid=True))
         q = min(Question.objects(valid=True), key=lambda x: x.fitness(answer_session))
         if q.fitness(answer_session) == 100:
             return None
@@ -50,7 +50,7 @@ class Question(Document):
         inference_list"""
         ids_of_question_already_answered = [a[0] for a in answer_session.answers]
         print ids_of_question_already_answered
-        if str(self.id) in ids_of_question_already_answered:
+        if str(self.id) in ids_of_question_already_answered or self.priority is None:
             return 100
         return 1 - self.priority
 
